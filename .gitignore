@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Browser session & passwords
+chrome_user_session/
+
+# Output folder backup (optional)
+output/
+
+# OS files
+.DS_Store
+.env
