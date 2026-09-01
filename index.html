@@ -1,3053 +1,4527 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#10151c">
-<title>MANHWA HQ // AI STORY OFFICE</title><style>
-/* =========================================================
-   MANHWA HQ
-   Single-file AI Manhwa Production Office
-   ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
+<title>Survival Story Office // Chibi AI Studio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
 
 :root{
-  --bg:#090d12;
-  --bg2:#10161e;
-  --panel:#151c25;
-  --panel2:#1a222d;
-  --paper:#e9dfc8;
-  --paper2:#d8ccb2;
-  --ink:#17191d;
-  --white:#f4f0e6;
-  --muted:#8d98a7;
-  --line:#344150;
-  --blue:#55b7ff;
-  --cyan:#53e0d0;
-  --green:#72d58a;
-  --yellow:#f5c95b;
-  --red:#ff6878;
-  --purple:#b998ff;
-  --orange:#ff9b61;
-  --shadow:6px 6px 0 #05070a;
-  --pixel:"Press Start 2P",monospace;
-  --mono:"Space Mono",monospace;
-  --ui:"Inter",sans-serif;
+    --yellow:#ffd43b;
+    --yellow2:#ffbd00;
+    --cream:#fff8df;
+    --paper:#fffdf4;
+    --brown:#342719;
+    --brown2:#5a4429;
+    --muted:#8b795e;
+    --green:#55b56a;
+    --red:#e85d5d;
+    --blue:#5b8def;
+    --purple:#9b72cf;
+    --orange:#ff914d;
+
+    --pixel-border:3px solid var(--brown);
+
+    --shadow:
+        5px 5px 0 var(--brown);
+
+    --shadow-small:
+        3px 3px 0 var(--brown);
 }
 
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-html,body{
-  min-height:100%;
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-  background:
-    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px),
-    var(--bg);
-  background-size:24px 24px;
-  color:var(--white);
-  font-family:var(--ui);
-  overflow-x:hidden;
+    min-height:100vh;
+    background:
+        radial-gradient(#d8c68f 1px,transparent 1px),
+        var(--cream);
+
+    background-size:20px 20px;
+
+    color:var(--brown);
+
+    font-family:
+        "Nunito",
+        sans-serif;
+
+    overflow-x:hidden;
 }
 
-/* CRT / scanline effect */
-body:after{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 3px,
-    rgba(255,255,255,.012) 4px
-  );
-  z-index:9999;
+/* =========================
+   PIXEL UTILITIES
+========================= */
+
+.pixel-font{
+    font-family:
+        "Press Start 2P",
+        monospace;
 }
 
 button,
 input,
 textarea,
 select{
-  font:inherit;
+    font-family:inherit;
 }
 
 button{
-  cursor:pointer;
+    cursor:pointer;
 }
 
-/* =========================================================
+.hidden{
+    display:none!important;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
+    max-width:1500px;
+    margin:auto;
+    padding:18px;
+}
+
+/* =========================
    TOP BAR
-   ========================================================= */
+========================= */
 
 .topbar{
-  height:70px;
-  border-bottom:3px solid #05070a;
-  background:#111821;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 22px;
-  position:sticky;
-  top:0;
-  z-index:1000;
-  box-shadow:0 5px 0 rgba(0,0,0,.3);
+    background:var(--paper);
+    border:var(--pixel-border);
+    box-shadow:var(--shadow);
+
+    min-height:75px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:20px;
+
+    padding:14px 18px;
+
+    position:relative;
+    z-index:10;
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
-.brand-icon{
-  width:42px;
-  height:42px;
-  display:grid;
-  place-items:center;
-  background:var(--paper);
-  color:#111;
-  border:3px solid #05070a;
-  box-shadow:4px 4px 0 #05070a;
-  font-size:22px;
+.brand-logo{
+    width:52px;
+    height:52px;
+
+    background:var(--yellow);
+
+    border:var(--pixel-border);
+
+    box-shadow:var(--shadow-small);
+
+    display:grid;
+    place-items:center;
+
+    font-size:25px;
+
+    animation:
+        logoFloat 2.5s ease-in-out infinite;
 }
 
-.brand h1{
-  font-family:var(--pixel);
-  font-size:13px;
-  letter-spacing:.5px;
+@keyframes logoFloat{
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-4px);
+    }
 }
 
-.brand small{
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:10px;
-  display:block;
-  margin-top:6px;
+.brand-title{
+    font-weight:900;
+    font-size:20px;
+}
+
+.brand-subtitle{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
 }
 
 .top-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
+    display:flex;
+    align-items:center;
+    gap:9px;
 }
 
-.connection{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--muted);
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border:2px solid #05070a;
-  background:var(--red);
-  box-shadow:2px 2px 0 #05070a;
-}
-
-.dot.online{
-  background:var(--green);
-}
-
-/* =========================================================
+/* =========================
    BUTTONS
-   ========================================================= */
+========================= */
 
 .btn{
-  border:2px solid #05070a;
-  background:#202a35;
-  color:white;
-  padding:9px 12px;
-  box-shadow:3px 3px 0 #05070a;
-  font-weight:800;
-  font-size:11px;
-  text-transform:uppercase;
-  transition:.12s;
+    border:var(--pixel-border);
+    background:var(--paper);
+
+    box-shadow:var(--shadow-small);
+
+    padding:10px 14px;
+
+    font-weight:900;
+    font-size:12px;
+
+    transition:
+        transform .12s,
+        box-shadow .12s,
+        background .12s;
 }
 
 .btn:hover{
-  transform:translate(-1px,-1px);
-  filter:brightness(1.15);
+    transform:translate(-2px,-2px);
+    box-shadow:5px 5px 0 var(--brown);
 }
 
 .btn:active{
-  transform:translate(3px,3px);
-  box-shadow:0 0 0 #05070a;
+    transform:translate(3px,3px);
+    box-shadow:0 0 0 var(--brown);
 }
 
-.btn.primary{
-  background:var(--blue);
-  color:#071018;
+.btn-yellow{
+    background:var(--yellow);
 }
 
-.btn.green{
-  background:var(--green);
-  color:#07120a;
+.btn-green{
+    background:var(--green);
+    color:white;
 }
 
-.btn.red{
-  background:var(--red);
-  color:#18070a;
+.btn-red{
+    background:var(--red);
+    color:white;
 }
 
-.btn.yellow{
-  background:var(--yellow);
-  color:#171006;
+.btn-blue{
+    background:var(--blue);
+    color:white;
 }
 
-.btn.purple{
-  background:var(--purple);
-  color:#11071c;
-}
-
-/* =========================================================
-   APP LAYOUT
-   ========================================================= */
-
-.app{
-  max-width:1600px;
-  margin:auto;
-  padding:18px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:280px minmax(0,1fr) 340px;
-  gap:16px;
-}
-
-/* =========================================================
-   PANELS
-   ========================================================= */
-
-.panel{
-  background:var(--panel);
-  border:2px solid #05070a;
-  box-shadow:var(--shadow);
-  min-width:0;
-}
-
-.panel-head{
-  min-height:48px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 12px;
-  background:var(--panel2);
-  border-bottom:2px solid #05070a;
-}
-
-.panel-title{
-  font-family:var(--pixel);
-  font-size:10px;
-  color:var(--paper);
-}
-
-.panel-body{
-  padding:12px;
-}
-
-/* =========================================================
-   LEFT NAV
-   ========================================================= */
-
-.workflow-list{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.workflow{
-  border:2px solid var(--line);
-  background:#111820;
-  color:#dce2e9;
-  padding:11px;
-  text-align:left;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  transition:.12s;
-}
-
-.workflow:hover{
-  border-color:var(--blue);
-  transform:translateX(2px);
-}
-
-.workflow.active{
-  background:#1d3141;
-  border-color:var(--blue);
-  box-shadow:3px 3px 0 #05070a;
-}
-
-.workflow-icon{
-  width:30px;
-  height:30px;
-  display:grid;
-  place-items:center;
-  background:#26313d;
-  border:2px solid #05070a;
-  font-size:15px;
-}
-
-.workflow strong{
-  font-size:12px;
-  display:block;
-}
-
-.workflow small{
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:9px;
-}
-
-.stat-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-  margin-top:14px;
-}
-
-.stat{
-  background:#0d131a;
-  border:2px solid var(--line);
-  padding:10px;
-}
-
-.stat b{
-  display:block;
-  font-family:var(--pixel);
-  font-size:11px;
-  margin-bottom:5px;
-}
-
-.stat span{
-  color:var(--muted);
-  font-size:9px;
-  font-family:var(--mono);
-}
-
-/* =========================================================
-   OFFICE
-   ========================================================= */
-
-.office{
-  min-height:500px;
-}
-
-.office-canvas{
-  position:relative;
-  min-height:560px;
-  overflow:hidden;
-  background:
-    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
-    #151d26;
-  background-size:32px 32px;
-}
-
-.room{
-  position:absolute;
-  border:2px solid #394756;
-  background:rgba(10,15,21,.35);
-}
-
-.room-label{
-  position:absolute;
-  top:-1px;
-  left:-1px;
-  background:#273441;
-  border:2px solid #05070a;
-  padding:5px 7px;
-  font-family:var(--pixel);
-  font-size:7px;
-  color:var(--paper);
-}
-
-.room.writer{
-  left:18px;
-  top:20px;
-  width:47%;
-  height:245px;
-}
-
-.room.director{
-  right:18px;
-  top:20px;
-  width:47%;
-  height:245px;
-}
-
-.room.research{
-  left:18px;
-  bottom:20px;
-  width:47%;
-  height:235px;
-}
-
-.room.voice{
-  right:18px;
-  bottom:20px;
-  width:47%;
-  height:235px;
-}
-
-.agent{
-  position:absolute;
-  width:110px;
-  text-align:center;
-  transition:.5s;
-}
-
-.agent-avatar{
-  width:58px;
-  height:58px;
-  margin:auto;
-  border:3px solid #05070a;
-  background:var(--paper);
-  box-shadow:4px 4px 0 #05070a;
-  display:grid;
-  place-items:center;
-  font-size:29px;
-  position:relative;
-}
-
-.agent-avatar:after{
-  content:"";
-  position:absolute;
-  bottom:-8px;
-  width:30px;
-  height:5px;
-  background:#05070a;
-}
-
-.agent-name{
-  margin-top:10px;
-  font-family:var(--pixel);
-  font-size:7px;
-}
-
-.agent-role{
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:8px;
-  margin-top:5px;
-}
-
-.agent-status{
-  display:inline-block;
-  margin-top:5px;
-  padding:3px 5px;
-  border:1px solid #05070a;
-  background:#202a35;
-  font-size:8px;
-  font-family:var(--mono);
-}
-
-.agent.working .agent-avatar{
-  animation:bob .65s infinite alternate steps(2);
-  box-shadow:
-    4px 4px 0 #05070a,
-    0 0 18px rgba(85,183,255,.35);
-}
-
-.agent.working .agent-status{
-  color:var(--green);
-}
-
-.agent.error .agent-status{
-  color:var(--red);
-}
-
-@keyframes bob{
-  from{transform:translateY(0)}
-  to{transform:translateY(-5px)}
-}
-
-#aWriter{left:25%;top:105px}
-#aDirector{right:25%;top:105px}
-#aResearch{left:25%;bottom:90px}
-#aVoice{right:25%;bottom:90px}
-
-/* animated packet */
-.packet{
-  position:absolute;
-  width:9px;
-  height:9px;
-  background:var(--yellow);
-  border:2px solid #05070a;
-  display:none;
-  z-index:10;
-}
-
-.packet.fly{
-  display:block;
-  animation:packetMove 1.4s linear infinite;
-}
-
-@keyframes packetMove{
-  0%{left:27%;top:145px}
-  45%{left:48%;top:290px}
-  100%{left:73%;top:145px}
-}
-
-/* =========================================================
+/* =========================
    WORKSPACE
-   ========================================================= */
+========================= */
 
 .workspace{
-  margin-top:16px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
+    display:grid;
+
+    grid-template-columns:
+        310px
+        minmax(420px,1fr)
+        330px;
+
+    gap:18px;
+
+    margin-top:20px;
 }
+
+/* =========================
+   CARDS
+========================= */
 
 .card{
-  background:#111820;
-  border:2px solid #05070a;
+    background:var(--paper);
+
+    border:var(--pixel-border);
+
+    box-shadow:var(--shadow);
+
+    overflow:hidden;
 }
 
-.card h3{
-  padding:10px;
-  font-family:var(--pixel);
-  font-size:9px;
-  background:#202b36;
-  border-bottom:2px solid #05070a;
+.card-head{
+    min-height:48px;
+
+    background:var(--yellow);
+
+    border-bottom:var(--pixel-border);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:9px 12px;
+
+    font-weight:900;
+}
+
+.card-head small{
+    font-family:
+        "Press Start 2P",
+        monospace;
+
+    font-size:7px;
 }
 
 .card-body{
-  padding:12px;
+    padding:13px;
 }
 
-label{
-  display:block;
-  color:#9ba6b3;
-  font-family:var(--mono);
-  font-size:9px;
-  margin-bottom:5px;
+/* =========================
+   INPUTS
+========================= */
+
+.field{
+    margin-bottom:13px;
+}
+
+.field label{
+    display:block;
+
+    font-size:10px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    color:var(--muted);
+
+    margin-bottom:5px;
 }
 
 input,
 textarea,
 select{
-  width:100%;
-  border:2px solid var(--line);
-  background:#0b1117;
-  color:#f3f3f3;
-  padding:10px;
-  outline:none;
-  font-family:var(--mono);
-  font-size:11px;
+    width:100%;
+
+    border:var(--pixel-border);
+
+    background:#fffdf4;
+
+    color:var(--brown);
+
+    padding:9px 10px;
+
+    outline:none;
+
+    box-shadow:
+        inset 2px 2px 0 rgba(0,0,0,.05);
+
+    font-size:13px;
 }
 
 textarea{
-  resize:vertical;
-  min-height:100px;
+    resize:vertical;
+    min-height:80px;
 }
 
 input:focus,
 textarea:focus,
 select:focus{
-  border-color:var(--blue);
+    border-color:#c48d00;
+
+    background:#fffbea;
+
+    box-shadow:
+        0 0 0 3px rgba(255,212,59,.35);
 }
 
-.field{
-  margin-bottom:12px;
+/* =========================
+   AGENT OFFICE
+========================= */
+
+.office{
+    min-height:600px;
+
+    background:
+        linear-gradient(
+            rgba(255,255,255,.45),
+            rgba(255,255,255,.45)
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 30px,
+            rgba(88,68,41,.05) 31px
+        );
+
+    position:relative;
+
+    overflow:hidden;
 }
 
-.two{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.office-grid{
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        linear-gradient(
+            rgba(90,68,41,.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(90,68,41,.08) 1px,
+            transparent 1px
+        );
+
+    background-size:35px 35px;
+
+    pointer-events:none;
 }
 
-/* =========================================================
-   OUTPUT
-   ========================================================= */
+.office-title{
+    position:absolute;
 
-.output{
-  min-height:330px;
-  white-space:pre-wrap;
-  line-height:1.55;
+    top:15px;
+    left:15px;
+
+    z-index:3;
+
+    background:var(--paper);
+
+    border:2px solid var(--brown);
+
+    box-shadow:var(--shadow-small);
+
+    padding:8px 10px;
+
+    font-weight:900;
 }
 
-.tabs{
-  display:flex;
-  border-bottom:2px solid #05070a;
+.office-title span{
+    display:block;
+
+    font-family:"Press Start 2P";
+
+    font-size:7px;
+
+    color:var(--muted);
+
+    margin-top:4px;
 }
 
-.tab{
-  flex:1;
-  padding:10px;
-  border:0;
-  border-right:2px solid #05070a;
-  background:#1b242e;
-  color:#b8c1cb;
-  font-family:var(--pixel);
-  font-size:8px;
+/* =========================
+   AGENTS
+========================= */
+
+.agent{
+    position:absolute;
+
+    width:120px;
+
+    text-align:center;
+
+    transition:
+        left .7s ease,
+        top .7s ease,
+        transform .3s ease;
+
+    z-index:4;
 }
 
-.tab.active{
-  background:var(--paper);
-  color:#111;
+.agent-avatar{
+    width:70px;
+    height:70px;
+
+    margin:auto;
+
+    border:3px solid var(--brown);
+
+    box-shadow:
+        4px 4px 0 var(--brown);
+
+    background:var(--yellow);
+
+    position:relative;
+
+    image-rendering:pixelated;
+
+    display:grid;
+    place-items:center;
+
+    font-size:34px;
+
+    animation:
+        chibiIdle 2s ease-in-out infinite;
 }
 
-.output-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:10px;
+@keyframes chibiIdle{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-5px);
+    }
+
 }
 
-/* =========================================================
-   RIGHT ACTIVITY
-   ========================================================= */
+.agent-avatar::after{
+    content:"";
+
+    position:absolute;
+
+    width:9px;
+    height:9px;
+
+    border:2px solid var(--brown);
+
+    background:#fff;
+
+    right:5px;
+    bottom:5px;
+
+    box-shadow:
+        inset 0 0 0 2px var(--green);
+}
+
+.agent-name{
+    margin-top:8px;
+
+    font-weight:900;
+
+    font-size:11px;
+}
+
+.agent-role{
+    font-size:9px;
+
+    color:var(--muted);
+}
+
+/* Agent positions */
+
+.agent.director{
+    top:105px;
+    left:7%;
+}
+
+.agent.writer{
+    top:290px;
+    left:7%;
+}
+
+.agent.visual{
+    top:105px;
+    right:7%;
+}
+
+.agent.guard{
+    top:290px;
+    right:7%;
+}
+
+.agent.audio{
+    bottom:30px;
+    left:calc(50% - 60px);
+}
+
+/* =========================
+   THINKING
+========================= */
+
+.thinking{
+    position:absolute;
+
+    top:-27px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:none;
+
+    background:white;
+
+    border:2px solid var(--brown);
+
+    padding:5px 8px;
+
+    font-family:
+        "Press Start 2P",
+        monospace;
+
+    font-size:7px;
+
+    white-space:nowrap;
+
+    box-shadow:var(--shadow-small);
+}
+
+.agent.thinking .thinking{
+    display:block;
+}
+
+.thinking::after{
+    content:"";
+
+    position:absolute;
+
+    bottom:-7px;
+
+    left:20px;
+
+    width:7px;
+    height:7px;
+
+    background:white;
+
+    border-right:2px solid var(--brown);
+    border-bottom:2px solid var(--brown);
+
+    transform:rotate(45deg);
+}
+
+.dots span{
+    animation:
+        blink 1.2s infinite;
+}
+
+.dots span:nth-child(2){
+    animation-delay:.2s;
+}
+
+.dots span:nth-child(3){
+    animation-delay:.4s;
+}
+
+@keyframes blink{
+    0%,80%,100%{
+        opacity:.2;
+    }
+
+    40%{
+        opacity:1;
+    }
+}
+
+/* =========================
+   MAIL / ROUTING
+========================= */
+
+.mail{
+    position:absolute;
+
+    width:23px;
+    height:18px;
+
+    background:white;
+
+    border:2px solid var(--brown);
+
+    z-index:8;
+
+    display:none;
+
+    box-shadow:2px 2px 0 var(--brown);
+
+    pointer-events:none;
+}
+
+.mail::after{
+    content:"✉";
+
+    position:absolute;
+
+    left:2px;
+    top:-5px;
+
+    font-size:14px;
+}
+
+.mail.fly{
+    display:block;
+
+    animation:
+        flyMail 1.2s ease-in-out forwards;
+}
+
+@keyframes flyMail{
+
+    0%{
+        left:15%;
+        top:25%;
+        transform:rotate(-10deg);
+    }
+
+    50%{
+        left:50%;
+        top:50%;
+        transform:rotate(15deg) scale(1.15);
+    }
+
+    100%{
+        left:80%;
+        top:30%;
+        transform:rotate(-10deg);
+    }
+
+}
+
+/* =========================
+   ACTIVITY LOG
+========================= */
+
+.activity{
+    margin-top:14px;
+
+    height:160px;
+
+    overflow:auto;
+
+    border-top:2px dashed var(--brown2);
+
+    padding-top:9px;
+}
 
 .log{
-  max-height:350px;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:7px;
+    font-family:
+        "Press Start 2P",
+        monospace;
+
+    font-size:7px;
+
+    line-height:1.8;
+
+    margin-bottom:7px;
+
+    animation:
+        logIn .25s ease;
 }
 
-.log-item{
-  background:#0d131a;
-  border-left:3px solid var(--blue);
-  padding:8px;
-  font-family:var(--mono);
-  font-size:9px;
-  line-height:1.5;
+@keyframes logIn{
+    from{
+        opacity:0;
+        transform:translateX(-8px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
 }
 
-.log-item.ok{border-color:var(--green)}
-.log-item.warn{border-color:var(--yellow)}
-.log-item.err{border-color:var(--red)}
-
-.log-time{
-  color:#687483;
-  margin-right:5px;
+.log .time{
+    color:var(--muted);
 }
 
-.memory{
-  max-height:210px;
-  overflow:auto;
-  color:#b9c3cd;
-  font-family:var(--mono);
-  font-size:9px;
-  line-height:1.6;
-  white-space:pre-wrap;
+.log .ok{
+    color:var(--green);
 }
 
-/* =========================================================
+.log .work{
+    color:#c18a00;
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.stat-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:8px;
+
+    margin-bottom:14px;
+}
+
+.stat{
+    border:2px solid var(--brown);
+
+    background:#fff8dc;
+
+    padding:10px;
+
+    box-shadow:2px 2px 0 var(--brown);
+}
+
+.stat-label{
+    font-size:8px;
+
+    text-transform:uppercase;
+
+    color:var(--muted);
+
+    font-weight:900;
+}
+
+.stat-value{
+    font-size:20px;
+
+    font-weight:900;
+
+    margin-top:3px;
+}
+
+/* =========================
+   WORKFLOW
+========================= */
+
+.workflow{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+}
+
+.workflow-step{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:2px solid var(--brown);
+
+    padding:8px;
+
+    background:#fffdf5;
+
+    transition:.2s;
+}
+
+.workflow-step.active{
+    background:var(--yellow);
+
+    transform:translateX(4px);
+
+    box-shadow:3px 3px 0 var(--brown);
+}
+
+.workflow-step.done{
+    background:#dff3df;
+}
+
+.workflow-icon{
+    width:32px;
+    height:32px;
+
+    display:grid;
+    place-items:center;
+
+    border:2px solid var(--brown);
+
+    background:white;
+
+    font-size:16px;
+}
+
+.workflow-text{
+    flex:1;
+}
+
+.workflow-name{
+    font-weight:900;
+    font-size:11px;
+}
+
+.workflow-state{
+    font-size:9px;
+    color:var(--muted);
+}
+
+/* =========================
    PROGRESS
-   ========================================================= */
+========================= */
+
+.progress-wrap{
+    margin-top:12px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+
+    font-size:10px;
+
+    font-weight:900;
+}
 
 .progress{
-  height:16px;
-  background:#090d12;
-  border:2px solid #05070a;
-  overflow:hidden;
+    height:18px;
+
+    border:3px solid var(--brown);
+
+    background:#eee2bd;
+
+    margin-top:5px;
+
+    overflow:hidden;
 }
 
 .progress-fill{
-  width:0;
-  height:100%;
-  background:linear-gradient(90deg,var(--blue),var(--cyan));
-  transition:.3s;
+    width:0%;
+
+    height:100%;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            var(--yellow) 0,
+            var(--yellow) 10px,
+            var(--yellow2) 10px,
+            var(--yellow2) 20px
+        );
+
+    transition:
+        width .4s ease;
 }
 
-.progress-text{
-  display:flex;
-  justify-content:space-between;
-  font-family:var(--mono);
-  font-size:9px;
-  color:var(--muted);
-  margin-top:6px;
+/* =========================
+   OUTPUT AREA
+========================= */
+
+.output{
+    margin-top:18px;
 }
 
-/* =========================================================
-   API MODAL
-   ========================================================= */
+.tabs{
+    display:flex;
 
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:5000;
-  padding:18px;
+    overflow:auto;
+
+    border-bottom:var(--pixel-border);
+
+    background:var(--yellow);
 }
 
-.modal.open{
-  display:flex;
+.tab{
+    border:0;
+
+    border-right:2px solid var(--brown);
+
+    background:transparent;
+
+    padding:12px 14px;
+
+    font-weight:900;
+
+    white-space:nowrap;
 }
 
-.modal-box{
-  width:min(600px,100%);
-  background:#151c25;
-  border:3px solid #05070a;
-  box-shadow:9px 9px 0 #05070a;
+.tab.active{
+    background:var(--paper);
 }
 
-.modal-head{
-  padding:14px;
-  background:var(--paper);
-  color:#111;
-  font-family:var(--pixel);
-  font-size:10px;
-  display:flex;
-  justify-content:space-between;
+.output-panel{
+    padding:14px;
 }
 
-.modal-body{
-  padding:15px;
+.output-area{
+    width:100%;
+
+    min-height:300px;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:12px;
+
+    line-height:1.55;
 }
 
-.notice{
-  background:#201c10;
-  border:2px solid #6c5a28;
-  padding:10px;
-  font-size:10px;
-  line-height:1.5;
-  color:#e8d89d;
-  margin-bottom:12px;
+/* =========================
+   STYLE DNA
+========================= */
+
+.style-dna{
+    border:2px solid var(--brown);
+
+    background:#fff9e5;
+
+    padding:10px;
+
+    margin-top:10px;
 }
 
-/* =========================================================
+.dna-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    border-bottom:1px dashed #c9b77f;
+
+    padding:5px 0;
+
+    font-size:10px;
+}
+
+.dna-row:last-child{
+    border-bottom:0;
+}
+
+.dna-row strong{
+    font-size:9px;
+}
+
+/* =========================
+   MAIN CONTROL
+========================= */
+
+.generate-area{
+    display:flex;
+
+    gap:9px;
+
+    margin-top:14px;
+}
+
+.generate-area .btn{
+    flex:1;
+}
+
+.running{
+    animation:
+        pulse .9s infinite alternate;
+}
+
+@keyframes pulse{
+    from{
+        box-shadow:3px 3px 0 var(--brown);
+    }
+
+    to{
+        box-shadow:7px 7px 0 var(--brown);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1150px){
+
+    .workspace{
+        grid-template-columns:
+            280px
+            1fr;
+    }
+
+    .right-column{
+        grid-column:1/-1;
+    }
+
+}
+
+@media(max-width:780px){
+
+    .app{
+        padding:10px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .top-actions{
+        flex-wrap:wrap;
+    }
+
+    .workspace{
+        grid-template-columns:1fr;
+    }
+
+    .office{
+        min-height:680px;
+    }
+
+    .agent.director{
+        left:3%;
+    }
+
+    .agent.writer{
+        left:3%;
+    }
+
+    .agent.visual{
+        right:3%;
+    }
+
+    .agent.guard{
+        right:3%;
+    }
+
+}
+
+/* =========================
    TOAST
-   ========================================================= */
+========================= */
 
 .toast{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  background:#111820;
-  border:2px solid #05070a;
-  box-shadow:4px 4px 0 #05070a;
-  padding:12px 14px;
-  max-width:330px;
-  font-family:var(--mono);
-  font-size:10px;
-  transform:translateY(150px);
-  opacity:0;
-  transition:.2s;
-  z-index:9000;
+    position:fixed;
+
+    right:18px;
+    bottom:18px;
+
+    background:var(--brown);
+
+    color:white;
+
+    border:3px solid var(--yellow);
+
+    padding:12px 15px;
+
+    box-shadow:5px 5px 0 #000;
+
+    z-index:999;
+
+    transform:
+        translateY(100px);
+
+    opacity:0;
+
+    transition:.3s;
+
+    font-weight:800;
+
+    max-width:330px;
 }
 
 .toast.show{
-  transform:translateY(0);
-  opacity:1;
+    transform:none;
+    opacity:1;
 }
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+/* =========================
+   MODAL
+========================= */
 
-@media(max-width:1200px){
-  .grid{
-    grid-template-columns:240px minmax(0,1fr);
-  }
+.modal{
+    position:fixed;
 
-  .right-column{
-    grid-column:1/-1;
-  }
+    inset:0;
+
+    background:rgba(40,30,15,.65);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:500;
+
+    padding:15px;
 }
 
-@media(max-width:800px){
-  .topbar{
-    height:auto;
-    min-height:70px;
-    padding:10px;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-
-  .brand h1{
-    font-size:9px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .right-column{
-    grid-column:auto;
-  }
-
-  .workspace{
-    grid-template-columns:1fr;
-  }
-
-  .office-canvas{
-    min-height:680px;
-  }
-
-  .room.writer,
-  .room.director,
-  .room.research,
-  .room.voice{
-    width:calc(100% - 36px);
-    left:18px;
-    right:auto;
-    height:145px;
-  }
-
-  .room.writer{top:15px}
-  .room.director{top:175px}
-  .room.research{bottom:175px}
-  .room.voice{bottom:15px}
-
-  #aWriter,
-  #aDirector,
-  #aResearch,
-  #aVoice{
-    left:50%;
-    right:auto;
-    transform:translateX(-50%);
-    top:auto;
-    bottom:auto;
-  }
-
-  #aWriter{top:52px}
-  #aDirector{top:212px}
-  #aResearch{bottom:212px}
-  #aVoice{bottom:52px}
-
-  .agent-avatar{
-    width:46px;
-    height:46px;
-    font-size:22px;
-  }
-
-  .agent-name{
-    font-size:6px;
-  }
-
-  .top-actions{
-    width:100%;
-  }
-
-  .top-actions .btn{
-    flex:1;
-  }
+.modal.show{
+    display:flex;
 }
 
-@media(prefers-reduced-motion:reduce){
-  *,
-  *:before,
-  *:after{
-    animation:none!important;
-    transition:none!important;
-  }
+.modal-card{
+    width:min(650px,100%);
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:var(--paper);
+
+    border:4px solid var(--brown);
+
+    box-shadow:
+        8px 8px 0 #000;
+
+    padding:18px;
 }
-</style></head><body><header class="topbar">
-  <div class="brand">
-    <div class="brand-icon">📄</div>
-    <div>
-      <h1>MANHWA HQ // AI STORY OFFICE</h1>
-      <small>PIXEL PRODUCTION FLOOR • v3.0 • GEMINI WORKBENCH</small>
+
+.modal-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+}
+
+.modal-title{
+    font-family:"Press Start 2P";
+
+    font-size:11px;
+}
+
+.close{
+    width:35px;
+    height:35px;
+
+    padding:0;
+}
+
+/* =========================
+   PIXEL LOADING
+========================= */
+
+.pixel-loader{
+    display:flex;
+
+    gap:5px;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+.pixel-loader i{
+    display:block;
+
+    width:9px;
+    height:9px;
+
+    background:var(--brown);
+
+    animation:
+        loader .8s infinite;
+}
+
+.pixel-loader i:nth-child(2){
+    animation-delay:.15s;
+}
+
+.pixel-loader i:nth-child(3){
+    animation-delay:.3s;
+}
+
+@keyframes loader{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            🏕️
+        </div>
+
+        <div>
+
+            <div class="brand-title">
+                SURVIVAL STORY OFFICE
+            </div>
+
+            <div class="brand-subtitle">
+                Chibi Multi-Agent Story & Visual Prompt Studio
+            </div>
+
+        </div>
+
     </div>
-  </div>  <div class="top-actions">
-    <div class="connection">
-      <span id="connectionDot" class="dot"></span>
-      <span id="connectionText">OFFLINE</span>
-    </div><button class="btn" onclick="openApiModal()">⚙ API</button>
-<button class="btn" onclick="saveProject()">💾 SAVE</button>
-<button class="btn" onclick="loadProject()">📂 LOAD</button>
 
-  </div>
-</header><main class="app"><div class="grid"><!-- ======================================================
-     LEFT SIDEBAR
-====================================================== --><aside class="panel">
-  <div class="panel-head">
-    <span class="panel-title">WORKFLOWS</span>
-  </div>  <div class="panel-body"><div class="workflow-list">
+    <div class="top-actions">
 
-  <button class="workflow active" data-workflow="story" onclick="selectWorkflow('story',this)">
-    <span class="workflow-icon">📖</span>
-    <span>
-      <strong>Story Forge</strong>
-      <small>50-scene batches</small>
-    </span>
-  </button>
+        <span
+            id="apiStatus"
+            class="btn"
+            style="
+                cursor:default;
+                background:#fff8df;
+            "
+        >
+            🔴 NO API
+        </span>
 
-  <button class="workflow" data-workflow="research" onclick="selectWorkflow('research',this)">
-    <span class="workflow-icon">🔍</span>
-    <span>
-      <strong>Research Lab</strong>
-      <small>Facts & context</small>
-    </span>
-  </button>
+        <button
+            class="btn btn-yellow"
+            onclick="openSettings()"
+        >
+            ⚙ SETTINGS
+        </button>
 
-  <button class="workflow" data-workflow="script" onclick="selectWorkflow('script',this)">
-    <span class="workflow-icon">✍️</span>
-    <span>
-      <strong>Script Writer</strong>
-      <small>YouTube narration</small>
-    </span>
-  </button>
+        <button
+            class="btn"
+            onclick="newProject()"
+        >
+            ＋ NEW
+        </button>
 
-  <button class="workflow" data-workflow="visual" onclick="selectWorkflow('visual',this)">
-    <span class="workflow-icon">🎨</span>
-    <span>
-      <strong>Visual Forge</strong>
-      <small>Flow prompts</small>
-    </span>
-  </button>
+    </div>
 
-  <button class="workflow" data-workflow="continuity" onclick="selectWorkflow('continuity',this)">
-    <span class="workflow-icon">🧠</span>
-    <span>
-      <strong>Continuity</strong>
-      <small>Story memory</small>
-    </span>
-  </button>
+</header>
 
-  <button class="workflow" data-workflow="director" onclick="selectWorkflow('director',this)">
-    <span class="workflow-icon">🎬</span>
-    <span>
-      <strong>Director</strong>
-      <small>Scene planning</small>
-    </span>
-  </button>
+
+<!-- =========================
+     MAIN WORKSPACE
+========================= -->
+
+<div class="workspace">
+
+<!-- =========================
+     LEFT SETTINGS
+========================= -->
+
+<section class="card">
+
+    <div class="card-head">
+
+        <span>
+            📕 STORY BIBLE
+        </span>
+
+        <small>
+            MEMORY
+        </small>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="field">
+
+            <label>
+                Story Title
+            </label>
+
+            <input
+                id="storyTitle"
+                value="The Last Survivor"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Genre
+            </label>
+
+            <select id="genre">
+
+                <option>Survival</option>
+                <option>Post Apocalyptic Survival</option>
+                <option>Wilderness Survival</option>
+                <option>Island Survival</option>
+                <option>Underground Survival</option>
+                <option>Zombie Survival</option>
+                <option>Fantasy Survival</option>
+                <option>Psychological Survival</option>
+                <option>Disaster Survival</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Main Character
+            </label>
+
+            <textarea id="character">
+18-year-old survivor, intelligent, calm under pressure, dark hair, practical outdoor clothing, small backpack, determined expression.
+            </textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                World / Environment
+            </label>
+
+            <textarea id="world">
+A remote mountainous wilderness after a mysterious global disaster. Dense forest, abandoned structures, rivers, caves, changing weather and scarce resources.
+            </textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Story Goal
+            </label>
+
+            <textarea id="storyGoal">
+The protagonist must survive, find food and shelter, understand what happened, and eventually discover a safe route toward civilization.
+            </textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Story Memory
+            </label>
+
+            <textarea
+                id="memory"
+                rows="5"
+            >
+Story begins with the protagonist waking alone in a cold wilderness with limited supplies.
+            </textarea>
+
+        </div>
+
+
+        <div
+            class="field"
+            style="
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:8px;
+            "
+        >
+
+            <div>
+
+                <label>
+                    Batch
+                </label>
+
+                <input
+                    id="batchNo"
+                    type="number"
+                    value="1"
+                    min="1"
+                >
+
+            </div>
+
+            <div>
+
+                <label>
+                    Total Batches
+                </label>
+
+                <input
+                    id="totalBatches"
+                    type="number"
+                    value="10"
+                    min="1"
+                    max="100"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Scenes / Batch
+            </label>
+
+            <input
+                id="scenesPerBatch"
+                type="number"
+                value="30"
+                min="5"
+                max="100"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Narration Language
+            </label>
+
+            <select id="language">
+
+                <option value="hinglish">
+                    Hinglish
+                </option>
+
+                <option value="hindi">
+                    Hindi
+                </option>
+
+                <option value="english">
+                    English
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     OFFICE
+========================= -->
+
+<section class="card">
+
+    <div class="card-head">
+
+        <span>
+            🏢 AGENT FLOOR
+        </span>
+
+        <small id="floorStatus">
+            IDLE
+        </small>
+
+    </div>
+
+
+    <div class="office" id="office">
+
+        <div class="office-grid"></div>
+
+
+        <div class="office-title">
+
+            SURVIVAL HQ
+
+            <span>
+                AGENTS ONLINE
+            </span>
+
+        </div>
+
+
+        <!-- DIRECTOR -->
+
+        <div
+            class="agent director"
+            id="agentDirector"
+        >
+
+            <div class="thinking">
+                Thinking<span class="dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+
+            <div class="agent-avatar">
+                🧑‍💼
+            </div>
+
+            <div class="agent-name">
+                DIRECTOR
+            </div>
+
+            <div class="agent-role">
+                Story Brain
+            </div>
+
+        </div>
+
+
+        <!-- WRITER -->
+
+        <div
+            class="agent writer"
+            id="agentWriter"
+        >
+
+            <div class="thinking">
+                Writing<span class="dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+
+            <div class="agent-avatar">
+                ✍️
+            </div>
+
+            <div class="agent-name">
+                WRITER
+            </div>
+
+            <div class="agent-role">
+                Narration
+            </div>
+
+        </div>
+
+
+        <!-- VISUAL -->
+
+        <div
+            class="agent visual"
+            id="agentVisual"
+        >
+
+            <div class="thinking">
+                Painting<span class="dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+
+            <div class="agent-avatar">
+                🎨
+            </div>
+
+            <div class="agent-name">
+                VISUAL AI
+            </div>
+
+            <div class="agent-role">
+                Flow Prompts
+            </div>
+
+        </div>
+
+
+        <!-- GUARD -->
+
+        <div
+            class="agent guard"
+            id="agentGuard"
+        >
+
+            <div class="thinking">
+                Checking<span class="dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+
+            <div class="agent-avatar">
+                🛡️
+            </div>
+
+            <div class="agent-name">
+                PROMPT GUARD
+            </div>
+
+            <div class="agent-role">
+                Safety + Rewrite
+            </div>
+
+        </div>
+
+
+        <!-- AUDIO -->
+
+        <div
+            class="agent audio"
+            id="agentAudio"
+        >
+
+            <div class="thinking">
+                Counting<span class="dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                </span>
+            </div>
+
+            <div class="agent-avatar">
+                🎙️
+            </div>
+
+            <div class="agent-name">
+                AUDIO DESK
+            </div>
+
+            <div class="agent-role">
+                Duration
+            </div>
+
+        </div>
+
+
+        <div
+            class="mail"
+            id="mail"
+        ></div>
+
+
+        <div
+            class="activity"
+            id="activity"
+        >
+
+            <div class="log">
+                <span class="time">
+                    SYSTEM
+                </span>
+                —
+                Office initialized.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     RIGHT PANEL
+========================= -->
+
+<section class="card right-column">
+
+    <div class="card-head">
+
+        <span>
+            📊 CONTROL DESK
+        </span>
+
+        <small>
+            LIVE
+        </small>
+
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="stat-grid">
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Scenes
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="sceneCount"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Minutes
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="minuteCount"
+                >
+                    0:00
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Batch
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="batchDisplay"
+                >
+                    1
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Style
+                </div>
+
+                <div
+                    class="stat-value"
+                    style="font-size:13px"
+                >
+                    LOCKED
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="progress-wrap">
+
+            <div class="progress-info">
+
+                <span>
+                    PROJECT PROGRESS
+                </span>
+
+                <span id="progressText">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-fill"
+                    id="progressFill"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <div class="workflow">
+
+            <div
+                class="workflow-step"
+                id="step1"
+            >
+
+                <div class="workflow-icon">
+                    🧠
+                </div>
+
+                <div class="workflow-text">
+
+                    <div class="workflow-name">
+                        Story Director
+                    </div>
+
+                    <div
+                        class="workflow-state"
+                        id="state1"
+                    >
+                        Waiting
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="workflow-step"
+                id="step2"
+            >
+
+                <div class="workflow-icon">
+                    ✍️
+                </div>
+
+                <div class="workflow-text">
+
+                    <div class="workflow-name">
+                        Narration Writer
+                    </div>
+
+                    <div
+                        class="workflow-state"
+                        id="state2"
+                    >
+                        Waiting
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="workflow-step"
+                id="step3"
+            >
+
+                <div class="workflow-icon">
+                    🎨
+                </div>
+
+                <div class="workflow-text">
+
+                    <div class="workflow-name">
+                        Visual Architect
+                    </div>
+
+                    <div
+                        class="workflow-state"
+                        id="state3"
+                    >
+                        Waiting
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="workflow-step"
+                id="step4"
+            >
+
+                <div class="workflow-icon">
+                    🛡️
+                </div>
+
+                <div class="workflow-text">
+
+                    <div class="workflow-name">
+                        Prompt Guard
+                    </div>
+
+                    <div
+                        class="workflow-state"
+                        id="state4"
+                    >
+                        Waiting
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="workflow-step"
+                id="step5"
+            >
+
+                <div class="workflow-icon">
+                    🧬
+                </div>
+
+                <div class="workflow-text">
+
+                    <div class="workflow-name">
+                        Style DNA
+                    </div>
+
+                    <div
+                        class="workflow-state"
+                        id="state5"
+                    >
+                        Locked
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="style-dna">
+
+            <div class="dna-row">
+                <span>Aspect</span>
+                <strong>16:9</strong>
+            </div>
+
+            <div class="dna-row">
+                <span>Visual Identity</span>
+                <strong>Natural Cinematic</strong>
+            </div>
+
+            <div class="dna-row">
+                <span>Detail</span>
+                <strong>HIGH</strong>
+            </div>
+
+            <div class="dna-row">
+                <span>Texture</span>
+                <strong>Organic</strong>
+            </div>
+
+            <div class="dna-row">
+                <span>Character</span>
+                <strong>CONSISTENT</strong>
+            </div>
+
+        </div>
+
+
+        <div class="generate-area">
+
+            <button
+                class="btn btn-green"
+                id="generateBtn"
+                onclick="startGeneration()"
+            >
+                ▶ START
+            </button>
+
+            <button
+                class="btn"
+                onclick="pauseGeneration()"
+            >
+                ⏸ PAUSE
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
 
 </div>
 
-<div class="stat-grid">
-  <div class="stat">
-    <b id="statScenes">0</b>
-    <span>SCENES</span>
-  </div>
 
-  <div class="stat">
-    <b id="statBatches">0</b>
-    <span>BATCHES</span>
-  </div>
-
-  <div class="stat">
-    <b id="statWords">0</b>
-    <span>WORDS</span>
-  </div>
-
-  <div class="stat">
-    <b id="statStatus">IDLE</b>
-    <span>STATUS</span>
-  </div>
-</div>
-
-<div style="margin-top:14px">
-  <button class="btn green" style="width:100%" onclick="runSelectedWorkflow()">
-    ▶ RUN WORKFLOW
-  </button>
-</div>
-
-<div style="margin-top:8px">
-  <button class="btn red" style="width:100%" onclick="stopGeneration()">
-    ■ STOP
-  </button>
-</div>
-
-  </div>
-</aside><!-- ======================================================
-     CENTER
-====================================================== --><section><div class="panel office">  <div class="panel-head">
-    <span class="panel-title">MANHWA PRODUCTION FLOOR</span>
-    <span id="floorStatus" style="font-family:var(--mono);font-size:9px;color:var(--muted)">
-      ALL AGENTS IDLE
-    </span>
-  </div>  <div class="office-canvas"><div class="room writer">
-  <div class="room-label">WRITER ROOM</div>
-</div>
-
-<div class="room director">
-  <div class="room-label">DIRECTOR ROOM</div>
-</div>
-
-<div class="room research">
-  <div class="room-label">RESEARCH LAB</div>
-</div>
-
-<div class="room voice">
-  <div class="room-label">VOICE / VISUAL</div>
-</div>
-
-<div id="aWriter" class="agent">
-  <div class="agent-avatar">✍️</div>
-  <div class="agent-name">PENNY</div>
-  <div class="agent-role">STORY WRITER</div>
-  <span class="agent-status">IDLE</span>
-</div>
-
-<div id="aDirector" class="agent">
-  <div class="agent-avatar">🎬</div>
-  <div class="agent-name">MICHAEL</div>
-  <div class="agent-role">DIRECTOR</div>
-  <span class="agent-status">IDLE</span>
-</div>
-
-<div id="aResearch" class="agent">
-  <div class="agent-avatar">🔍</div>
-  <div class="agent-name">DWIGHT</div>
-  <div class="agent-role">RESEARCHER</div>
-  <span class="agent-status">IDLE</span>
-</div>
-
-<div id="aVoice" class="agent">
-  <div class="agent-avatar">🎨</div>
-  <div class="agent-name">PAM</div>
-  <div class="agent-role">VISUAL DESIGNER</div>
-  <span class="agent-status">IDLE</span>
-</div>
-
-<div id="packet" class="packet"></div>
-
-  </div></div><!-- ======================================================
-     STORY BIBLE
-====================================================== --><div class="workspace"><div class="card">
-  <h3>📕 STORY BIBLE</h3>  <div class="card-body"><div class="field">
-  <label>Series Title / Genre</label>
-  <input id="storyTitle"
-  value="Shadow Monarch Rebirth — Dark Fantasy / Dungeon">
-</div>
-
-<div class="field">
-  <label>Main Character</label>
-  <input id="mcSpecs"
-  value="Jin-Woo: black hair, glowing blue eyes, black dagger, shadow powers">
-</div>
-
-<div class="field">
-  <label>World / Rules</label>
-  <textarea id="worldRules">Hunters enter dangerous dungeons. Ranks range from E to S. The MC starts weak but possesses a hidden shadow ability.</textarea>
-</div>
-
-<div class="field">
-  <label>16:9 Visual Style Anchor</label>
-  <textarea id="styleAnchor">cinematic Korean manhwa webtoon, sharp lineart, dramatic lighting, deep shadows, dynamic perspective, detailed environment, high contrast, 16:9 widescreen</textarea>
-</div>
-
-<div class="two">
-
-  <div class="field">
-    <label>Current Batch</label>
-    <input id="currentBatch" type="number" value="1" min="1">
-  </div>
-
-  <div class="field">
-    <label>Total Batches</label>
-    <input id="targetBatches" type="number" value="12" min="1" max="100">
-  </div>
-
-</div>
-
-<div class="field">
-  <label>Continuity Memory</label>
-  <textarea id="continuityBuffer">Story starts fresh. MC enters an E-Rank dungeon looking for crystals.</textarea>
-</div>
-
-  </div>
-</div><!-- ======================================================
-     EXECUTION
-====================================================== --><div class="card">  <h3>⚡ EXECUTION CONTROL</h3>  <div class="card-body"><div class="field">
-  <label>Gemini Model</label>
-
-  <select id="modelSelect">
-    <option value="gemini-3.7-flash">Gemini 3.7 Flash — Recommended</option>
-    <option value="gemini-3.6-flash">Gemini 3.6 Flash — Faster</option>
-    <option value="gemini-3.5-flash">Gemini 3.5 Flash — Legacy</option>
-    <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
-  </select>
-</div>
-
-<div class="field">
-  <label>Thinking Level</label>
-
-  <select id="thinkingLevel">
-    <option value="low">LOW — Fast</option>
-    <option value="medium" selected>MEDIUM — Balanced</option>
-    <option value="high">HIGH — Quality</option>
-  </select>
-</div>
-
-<div class="field">
-  <label>Scenes Per Batch</label>
-
-  <select id="scenesPerBatch">
-    <option value="10">10 — Safe / Fast</option>
-    <option value="25">25</option>
-    <option value="50" selected>50 — Full Batch</option>
-  </select>
-</div>
-
-<div class="field">
-
-  <label>PROGRESS</label>
-
-  <div class="progress">
-    <div id="progressFill" class="progress-fill"></div>
-  </div>
-
-  <div class="progress-text">
-    <span id="progressText">0%</span>
-    <span id="batchText">Batch 1 / 12</span>
-  </div>
-
-</div>
-
-<div class="field">
-
-  <label>RUNTIME STATUS</label>
-
-  <div id="runtimeStatus"
-  style="
-  border:2px solid var(--line);
-  background:#0b1117;
-  padding:12px;
-  min-height:80px;
-  font-family:var(--mono);
-  font-size:10px;
-  line-height:1.6;
-  color:#aab4bf;">
-  System ready.
-  </div>
-
-</div>
-
-<div class="two">
-
-  <button class="btn primary" onclick="runSelectedWorkflow()">
-    ▶ START
-  </button>
-
-  <button class="btn yellow" onclick="testGemini()">
-    ⚡ TEST API
-  </button>
-
-</div>
-
-  </div></div></div><!-- ======================================================
+<!-- =========================
      OUTPUT
-====================================================== --><div class="panel" style="margin-top:16px">  <div class="tabs"><button id="tabNarration"
-class="tab active"
-onclick="switchOutput('narration')">
-  🎙 NARRATION
-</button>
+========================= -->
 
-<button id="tabPrompts"
-class="tab"
-onclick="switchOutput('prompts')">
-  🎨 FLOW PROMPTS
-</button>
+<section class="card output">
 
-<button id="tabJSON"
-class="tab"
-onclick="switchOutput('json')">
-  {} RAW JSON
-</button>
+    <div class="tabs">
 
-  </div>  <div class="panel-body"><textarea id="narrationOutput"
-class="output"
-placeholder="Narration will appear here..."></textarea>
+        <button
+            class="tab active"
+            onclick="showTab('script')"
+        >
+            🎙️ AI-READY SCRIPT
+        </button>
 
-<textarea id="promptsOutput"
-class="output"
-style="display:none"
-placeholder="Image prompts will appear here..."></textarea>
+        <button
+            class="tab"
+            onclick="showTab('prompts')"
+        >
+            🎨 FLOW PROMPTS
+        </button>
 
-<textarea id="jsonOutput"
-class="output"
-style="display:none"
-placeholder="Raw structured JSON..."></textarea>
+        <button
+            class="tab"
+            onclick="showTab('memory')"
+        >
+            🧠 MEMORY
+        </button>
 
-<div class="output-actions">
+        <button
+            class="tab"
+            onclick="showTab('debug')"
+        >
+            🧪 AGENT LOG
+        </button>
 
-  <button class="btn" onclick="copyOutput()">📋 COPY</button>
+    </div>
 
-  <button class="btn" onclick="downloadNarration()">💾 TXT</button>
 
-  <button class="btn" onclick="downloadPrompts()">🎨 PROMPTS</button>
+    <!-- SCRIPT -->
 
-  <button class="btn purple" onclick="downloadJSON()">{} JSON</button>
+    <div
+        class="output-panel"
+        id="scriptPanel"
+    >
 
-  <button class="btn red" onclick="clearOutputs()">🗑 CLEAR</button>
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                gap:8px;
+                flex-wrap:wrap;
+                margin-bottom:10px;
+            "
+        >
+
+            <div>
+
+                <strong>
+                    Clean Voiceover
+                </strong>
+
+                <div
+                    style="
+                        color:var(--muted);
+                        font-size:10px;
+                    "
+                >
+                    No headings • No scene labels • AI voice ready
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <button
+                    class="btn"
+                    onclick="copyScript()"
+                >
+                    📋 COPY
+                </button>
+
+                <button
+                    class="btn btn-yellow"
+                    onclick="downloadScript()"
+                >
+                    💾 DOWNLOAD .TXT
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <textarea
+            id="scriptOutput"
+            class="output-area"
+            placeholder="Your clean survival narration will appear here..."
+        ></textarea>
+
+    </div>
+
+
+    <!-- PROMPTS -->
+
+    <div
+        class="output-panel hidden"
+        id="promptsPanel"
+    >
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                gap:8px;
+                flex-wrap:wrap;
+                margin-bottom:10px;
+            "
+        >
+
+            <div>
+
+                <strong>
+                    Google Flow Ready Prompts
+                </strong>
+
+                <div
+                    style="
+                        color:var(--muted);
+                        font-size:10px;
+                    "
+                >
+                    Cleaned + consistency locked + safety rewritten
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-yellow"
+                onclick="downloadPrompts()"
+            >
+                💾 DOWNLOAD PROMPTS
+            </button>
+
+        </div>
+
+
+        <textarea
+            id="promptOutput"
+            class="output-area"
+            placeholder="Flow prompts will appear here..."
+        ></textarea>
+
+    </div>
+
+
+    <!-- MEMORY -->
+
+    <div
+        class="output-panel hidden"
+        id="memoryPanel"
+    >
+
+        <textarea
+            id="memoryOutput"
+            class="output-area"
+            placeholder="Story memory..."
+        ></textarea>
+
+        <br><br>
+
+        <button
+            class="btn btn-yellow"
+            onclick="saveMemory()"
+        >
+            🧠 SAVE MEMORY
+        </button>
+
+    </div>
+
+
+    <!-- DEBUG -->
+
+    <div
+        class="output-panel hidden"
+        id="debugPanel"
+    >
+
+        <textarea
+            id="debugOutput"
+            class="output-area"
+            placeholder="Agent logs..."
+        ></textarea>
+
+    </div>
+
+</section>
 
 </div>
 
-  </div></div></section><!-- ======================================================
-     RIGHT SIDEBAR
-====================================================== --><aside class="right-column"><div class="panel">  <div class="panel-head">
-    <span class="panel-title">AGENT COMMS</span>
-    <button class="btn" style="padding:5px 7px;font-size:8px" onclick="clearLogs()">
-      CLEAR
-    </button>
-  </div>  <div class="panel-body"><div id="activityLog" class="log">
 
-  <div class="log-item ok">
-    <span class="log-time">SYSTEM</span>
-    Office initialized.
-  </div>
+<!-- =========================
+     SETTINGS MODAL
+========================= -->
 
-  <div class="log-item">
-    <span class="log-time">SYSTEM</span>
-    Waiting for Gemini API key.
-  </div>
+<div
+    class="modal"
+    id="settingsModal"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-head">
+
+            <div class="modal-title">
+                ⚙ AI SETTINGS
+            </div>
+
+            <button
+                class="btn close"
+                onclick="closeSettings()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Gemini API Key
+            </label>
+
+            <input
+                type="password"
+                id="apiKey"
+                placeholder="AIza..."
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Main Story Model
+            </label>
+
+            <select id="storyModel">
+
+                <option value="gemini-3.6-flash">
+                    Gemini 3.6 Flash
+                </option>
+
+                <option value="gemini-3.5-flash">
+                    Gemini 3.5 Flash
+                </option>
+
+                <option value="gemini-3.5-flash-lite">
+                    Gemini 3.5 Flash-Lite
+                </option>
+
+                <option value="gemini-3.1-flash-lite">
+                    Gemini 3.1 Flash-Lite
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Visual Prompt Model
+            </label>
+
+            <select id="visualModel">
+
+                <option value="gemini-3.5-flash-lite">
+                    Gemini 3.5 Flash-Lite
+                </option>
+
+                <option value="gemini-3.1-flash-lite">
+                    Gemini 3.1 Flash-Lite
+                </option>
+
+                <option value="gemini-3.6-flash">
+                    Gemini 3.6 Flash
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            style="
+                background:#fff5ce;
+                border:2px solid var(--brown);
+                padding:12px;
+                margin-bottom:15px;
+                font-size:11px;
+                line-height:1.5;
+            "
+        >
+
+            <strong>
+                🧠 TWO-AI ARCHITECTURE
+            </strong>
+
+            <br><br>
+
+            AI #1:
+            Story + narration + continuity.
+
+            <br>
+
+            AI #2:
+            Visual prompt engineering + consistency + safety rewrite.
+
+            <br><br>
+
+            Model availability and free-tier limits depend on
+            your Google AI account/project. The app does not
+            assume that every model is unlimited-free.
+
+        </div>
+
+
+        <button
+            class="btn btn-green"
+            style="width:100%;justify-content:center;"
+            onclick="saveSettings()"
+        >
+            💾 SAVE AI CONFIGURATION
+        </button>
+
+    </div>
 
 </div>
 
-  </div></div><div class="panel" style="margin-top:16px">  <div class="panel-head">
-    <span class="panel-title">LONG-TERM MEMORY</span>
-  </div>  <div class="panel-body"><div id="memoryView" class="memory">
 
-No story memory generated yet.
-</div>
+<div
+    class="toast"
+    id="toast"
+></div>
 
-  </div></div><div class="panel" style="margin-top:16px">  <div class="panel-head">
-    <span class="panel-title">PROJECT</span>
-  </div>  <div class="panel-body"><button class="btn" style="width:100%;margin-bottom:7px" onclick="exportProject()">
-  📦 EXPORT PROJECT
-</button>
 
-<button class="btn" style="width:100%;margin-bottom:7px" onclick="importProject()">
-  📥 IMPORT PROJECT
-</button>
+<script>
 
-<button class="btn red" style="width:100%" onclick="resetProject()">
-  ☢ RESET PROJECT
-</button>
-
-  </div></div></aside></div></main><!-- ======================================================
-     API MODAL
-====================================================== --><div id="apiModal" class="modal">  <div class="modal-box"><div class="modal-head">
-  <span>GEMINI CONNECTION</span>
-
-  <button
-  class="btn"
-  style="padding:5px 8px"
-  onclick="closeApiModal()">X</button>
-</div>
-
-<div class="modal-body">
-
-  <div class="notice">
-    Your API key is stored in this browser's localStorage.
-    Do not use this client-side architecture for a public production website
-    where the key must remain secret.
-  </div>
-
-  <div class="field">
-    <label>Gemini API Key</label>
-
-    <input
-    id="apiKeyInput"
-    type="password"
-    placeholder="AIza...">
-  </div>
-
-  <div class="two">
-
-    <button class="btn primary" onclick="saveApiKey()">
-      SAVE KEY
-    </button>
-
-    <button class="btn red" onclick="removeApiKey()">
-      REMOVE
-    </button>
-
-  </div>
-
-  <div style="
-  margin-top:12px;
-  color:var(--muted);
-  font-family:var(--mono);
-  font-size:9px;
-  line-height:1.6">
-    Model endpoint: Google Gemini API<br>
-    Default model: gemini-3.7-flash
-  </div>
-
-</div>
-
-  </div></div><div id="toast" class="toast"></div><script>
 /* =========================================================
-   MANHWA HQ ENGINE
-   ========================================================= */
+   SURVIVAL STORY OFFICE
+   SINGLE FILE ENGINE
+========================================================= */
 
-const STORAGE = {
-  key:"manhwa_hq_gemini_key",
-  project:"manhwa_hq_project_v3",
-  narration:"manhwa_hq_narration",
-  prompts:"manhwa_hq_prompts",
-  raw:"manhwa_hq_raw",
-  memory:"manhwa_hq_memory",
-  logs:"manhwa_hq_logs"
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state = {
+
+    running:false,
+
+    paused:false,
+
+    scenes:0,
+
+    words:0,
+
+    minutes:0,
+
+    currentBatch:1,
+
+    memory:"",
+
+    script:"",
+
+    prompts:"",
+
+    logs:[],
+
+    styleDNA:{
+        aspect:"16:9",
+        visualIdentity:
+            "cinematic survival illustration, natural realistic textures",
+        palette:
+            "warm natural earth tones with controlled golden highlights",
+        lighting:
+            "soft cinematic natural lighting",
+        texture:
+            "organic environmental texture, detailed surfaces",
+        character:
+            "consistent facial structure, clothing and proportions",
+        quality:
+            "high detail, polished professional illustration"
+    }
+
 };
 
-let isRunning = false;
-let selectedWorkflow = "story";
-let lastJSON = null;
 
 /* =========================================================
-   HELPERS
+   DOM
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+    document.getElementById(id);
 
-function sleep(ms){
-  return new Promise(resolve => setTimeout(resolve,ms));
-}
-
-function now(){
-  return new Date().toLocaleTimeString([],{
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-  });
-}
-
-function toast(message){
-  const t = $("toast");
-  t.textContent = message;
-  t.classList.add("show");
-
-  setTimeout(()=>{
-    t.classList.remove("show");
-  },2800);
-}
-
-function log(message,type=""){
-  const box = $("activityLog");
-
-  const item = document.createElement("div");
-  item.className = "log-item " + type;
-
-  item.innerHTML =
-    `<span class="log-time">${now()}</span>${escapeHTML(message)}`;
-
-  box.prepend(item);
-
-  while(box.children.length > 40){
-    box.removeChild(box.lastChild);
-  }
-
-  saveLogs();
-}
-
-function escapeHTML(value){
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-/* =========================================================
-   API KEY
-========================================================= */
-
-function openApiModal(){
-  const key = localStorage.getItem(STORAGE.key) || "";
-  $("apiKeyInput").value = key;
-  $("apiModal").classList.add("open");
-}
-
-function closeApiModal(){
-  $("apiModal").classList.remove("open");
-}
-
-function saveApiKey(){
-  const key = $("apiKeyInput").value.trim();
-
-  if(!key){
-    toast("API key is empty.");
-    return;
-  }
-
-  localStorage.setItem(STORAGE.key,key);
-
-  updateConnection(true);
-
-  closeApiModal();
-
-  log("Gemini API key saved.","ok");
-  toast("Gemini key saved.");
-}
-
-function removeApiKey(){
-  localStorage.removeItem(STORAGE.key);
-
-  $("apiKeyInput").value = "";
-
-  updateConnection(false);
-
-  log("Gemini API key removed.","warn");
-  toast("API key removed.");
-}
-
-function updateConnection(online){
-  const dot = $("connectionDot");
-  const text = $("connectionText");
-
-  if(online){
-    dot.classList.add("online");
-    text.textContent = "KEY READY";
-  }else{
-    dot.classList.remove("online");
-    text.textContent = "NO KEY";
-  }
-}
-
-/* =========================================================
-   WORKFLOW
-========================================================= */
-
-const workflowNames = {
-  story:"Story Forge",
-  research:"Research Lab",
-  script:"Script Writer",
-  visual:"Visual Forge",
-  continuity:"Continuity",
-  director:"Director"
-};
-
-function selectWorkflow(name,button){
-
-  selectedWorkflow = name;
-
-  document
-    .querySelectorAll(".workflow")
-    .forEach(x => x.classList.remove("active"));
-
-  button.classList.add("active");
-
-  log(`Workflow selected: ${workflowNames[name]}`);
-
-  const descriptions = {
-    story:"Full 50-scene manhwa batch production.",
-    research:"Research facts, world details and references.",
-    script:"Convert story material into clean YouTube narration.",
-    visual:"Generate detailed 16:9 Google Flow prompts.",
-    continuity:"Compress latest story events into memory.",
-    director:"Plan scenes, camera, action and visual beats."
-  };
-
-  $("runtimeStatus").textContent = descriptions[name];
-}
-
-/* =========================================================
-   AGENT CONTROL
-========================================================= */
-
-const agents = {
-  writer:$("aWriter"),
-  director:$("aDirector"),
-  research:$("aResearch"),
-  voice:$("aVoice")
-};
-
-function setAgent(agent,status){
-
-  if(!agents[agent]) return;
-
-  const el = agents[agent];
-
-  el.classList.remove("working","error");
-
-  const badge = el.querySelector(".agent-status");
-
-  if(status==="WORKING"){
-    el.classList.add("working");
-    badge.textContent = "WORKING";
-  }
-  else if(status==="ERROR"){
-    el.classList.add("error");
-    badge.textContent = "ERROR";
-  }
-  else{
-    badge.textContent = "IDLE";
-  }
-}
-
-function setFloorStatus(text){
-  $("floorStatus").textContent = text;
-}
-
-function animatePacket(enable){
-  $("packet").classList.toggle("fly",enable);
-}
-
-/* =========================================================
-   GEMINI API
-========================================================= */
-
-async function geminiRequest(prompt,schema,retries=4){
-
-  const key = localStorage.getItem(STORAGE.key);
-
-  if(!key){
-    throw new Error("Gemini API key missing. Open API settings.");
-  }
-
-  const model = $("modelSelect").value;
-  const thinking = $("thinkingLevel").value;
-
-  const url =
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
-
-  const body = {
-    contents:[
-      {
-        parts:[
-          {
-            text:prompt
-          }
-        ]
-      }
-    ],
-
-    generationConfig:{
-      responseMimeType:"application/json",
-      responseSchema:schema
-    }
-  };
-
-  /*
-    Gemini 3.7 supports configurable thinking.
-    Some older model variants may reject this field,
-    therefore retry once without thinking metadata if needed.
-  */
-
-  if(model === "gemini-3.7-flash"){
-    body.generationConfig.thinkingConfig = {
-      thinkingLevel:thinking
-    };
-  }
-
-  let lastError = null;
-
-  for(let attempt=0; attempt<retries; attempt++){
-
-    try{
-
-      const response = await fetch(url,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify(body)
-      });
-
-      const data = await response.json();
-
-      if(!response.ok || data.error){
-
-        const message =
-          data?.error?.message ||
-          `HTTP ${response.status}`;
-
-        /*
-          Retry rate limits and temporary server errors.
-        */
-
-        if(
-          response.status === 429 ||
-          response.status >= 500
-        ){
-
-          lastError = new Error(message);
-
-          const delay =
-            Math.min(
-              30000,
-              1500 * Math.pow(2,attempt)
-            ) + Math.random()*500;
-
-          log(
-            `API temporary error. Retry ${attempt+1}/${retries} in ${Math.round(delay)}ms`,
-            "warn"
-          );
-
-          await sleep(delay);
-
-          continue;
-        }
-
-        throw new Error(message);
-      }
-
-      const text =
-        data?.candidates?.[0]?.content?.parts
-          ?.map(p => p.text || "")
-          .join("")
-          .trim();
-
-      if(!text){
-        throw new Error("Gemini returned an empty response.");
-      }
-
-      try{
-        return JSON.parse(text);
-      }
-      catch(e){
-        /*
-          Last-resort JSON extraction.
-        */
-
-        const first = text.indexOf("{");
-        const last = text.lastIndexOf("}");
-
-        if(first !== -1 && last !== -1){
-          return JSON.parse(
-            text.slice(first,last+1)
-          );
-        }
-
-        throw new Error(
-          "Gemini returned invalid JSON."
-        );
-      }
-
-    }
-    catch(error){
-
-      lastError = error;
-
-      if(attempt === retries-1){
-        break;
-      }
-
-      const delay =
-        Math.min(
-          30000,
-          1200 * Math.pow(2,attempt)
-        );
-
-      log(
-        `Request failed. Retry ${attempt+1}/${retries}.`,
-        "warn"
-      );
-
-      await sleep(delay);
-    }
-  }
-
-  throw lastError || new Error("Gemini request failed.");
-}
-
-/* =========================================================
-   SCHEMAS
-========================================================= */
-
-const sceneSchema = {
-
-  type:"object",
-
-  properties:{
-
-    scenes:{
-      type:"array",
-      items:{
-        type:"object",
-        properties:{
-          id:{type:"integer"},
-          narration:{type:"string"},
-          image_prompt:{type:"string"}
-        },
-        required:[
-          "id",
-          "narration",
-          "image_prompt"
-        ]
-      }
-    },
-
-    next_scene_buffer:{
-      type:"string"
-    }
-
-  },
-
-  required:[
-    "scenes",
-    "next_scene_buffer"
-  ]
-};
-
-const researchSchema = {
-
-  type:"object",
-
-  properties:{
-    summary:{type:"string"},
-
-    facts:{
-      type:"array",
-      items:{type:"string"}
-    },
-
-    story_uses:{
-      type:"array",
-      items:{type:"string"}
-    },
-
-    warnings:{
-      type:"array",
-      items:{type:"string"}
-    }
-  },
-
-  required:[
-    "summary",
-    "facts",
-    "story_uses",
-    "warnings"
-  ]
-};
-
-const memorySchema = {
-
-  type:"object",
-
-  properties:{
-    memory:{type:"string"},
-    characters:{type:"string"},
-    unresolved_threads:{type:"string"},
-    next_direction:{type:"string"}
-  },
-
-  required:[
-    "memory",
-    "characters",
-    "unresolved_threads",
-    "next_direction"
-  ]
-};
-
-const directorSchema = {
-
-  type:"object",
-
-  properties:{
-    scenes:{
-      type:"array",
-      items:{
-        type:"object",
-        properties:{
-          scene_id:{type:"integer"},
-          purpose:{type:"string"},
-          action:{type:"string"},
-          camera:{type:"string"},
-          emotion:{type:"string"},
-          transition:{type:"string"}
-        },
-        required:[
-          "scene_id",
-          "purpose",
-          "action",
-          "camera",
-          "emotion",
-          "transition"
-        ]
-      }
-    }
-  },
-
-  required:["scenes"]
-};
-
-/* =========================================================
-   PROMPT BUILDER
-========================================================= */
-
-function bible(){
-
-  return {
-    title:$("storyTitle").value.trim(),
-    mc:$("mcSpecs").value.trim(),
-    world:$("worldRules").value.trim(),
-    style:$("styleAnchor").value.trim(),
-    memory:$("continuityBuffer").value.trim()
-  };
-}
-
-function buildStoryPrompt(){
-
-  const b = bible();
-
-  const batch =
-    Math.max(1,parseInt($("currentBatch").value));
-
-  const count =
-    Math.max(1,parseInt($("scenesPerBatch").value));
-
-  const start =
-    ((batch-1)*count)+1;
-
-  const end =
-    start+count-1;
-
-  return `
-You are the lead Korean manhwa adaptation writer and YouTube
-recap writer working inside a professional production office.
-
-PROJECT
-Title: ${b.title}
-
-MAIN CHARACTER
-${b.mc}
-
-WORLD RULES
-${b.world}
-
-VISUAL STYLE
-${b.style}
-
-CURRENT STORY MEMORY
-${b.memory}
-
-BATCH
-Batch ${batch}
-Scene IDs ${start} through ${end}
-
-TASK
-
-Create exactly ${count} sequential scenes.
-
-For every scene provide:
-
-1. narration
-2. image_prompt
-
-NARRATION RULES
-
-- Hindi/Hinglish.
-- Natural YouTube recap language.
-- 10 to 18 words per scene.
-- Fast pacing.
-- No headings inside narration.
-- Do not repeat the scene ID.
-- Avoid robotic wording.
-- Keep cause and effect clear.
-- Maintain continuity.
-
-IMAGE PROMPT RULES
-
-- 16:9 widescreen.
-- Cinematic Korean manhwa/webtoon look.
-- Sharp line art.
-- Detailed environment.
-- Character identity must remain consistent.
-- Describe camera angle.
-- Describe lighting.
-- Describe character pose/action.
-- Describe mood.
-- Never put dialogue text inside the image.
-- Never use vague prompts.
-
-CONTINUITY
-
-Do not contradict existing story memory.
-
-At the end create a compact next_scene_buffer
-that another AI writer can use to continue the story.
-
-Return ONLY the requested JSON structure.
-`;
-}
-
-/* =========================================================
-   STORY GENERATION
-========================================================= */
-
-async function runStory(){
-
-  setAgent("writer","WORKING");
-  setAgent("director","WORKING");
-
-  setFloorStatus("WRITER + DIRECTOR ACTIVE");
-  animatePacket(true);
-
-  const batch =
-    parseInt($("currentBatch").value);
-
-  const total =
-    parseInt($("targetBatches").value);
-
-  const count =
-    parseInt($("scenesPerBatch").value);
-
-  const start =
-    ((batch-1)*count)+1;
-
-  log(
-    `Starting Story Forge — batch ${batch}/${total}.`,
-    "ok"
-  );
-
-  $("runtimeStatus").textContent =
-    `Generating scenes ${start}-${start+count-1}...`;
-
-  const result =
-    await geminiRequest(
-      buildStoryPrompt(),
-      sceneSchema
-    );
-
-  if(
-    !result.scenes ||
-    !Array.isArray(result.scenes)
-  ){
-    throw new Error("Invalid scene response.");
-  }
-
-  lastJSON = result;
-
-  let narration = "";
-  let prompts = "";
-
-  result.scenes.forEach(scene => {
-
-    narration +=
-      `[${scene.id}] ${scene.narration}\n\n`;
-
-    prompts +=
-      `[SCENE ${scene.id}]\n${scene.image_prompt}\n\n`;
-  });
-
-  $("narrationOutput").value += narration;
-  $("promptsOutput").value += prompts;
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  if(result.next_scene_buffer){
-    $("continuityBuffer").value =
-      result.next_scene_buffer;
-
-    $("memoryView").textContent =
-      result.next_scene_buffer;
-  }
-
-  $("currentBatch").value = batch+1;
-
-  updateStats();
-
-  saveWorkspace();
-
-  log(
-    `Batch ${batch} completed — ${result.scenes.length} scenes.`,
-    "ok"
-  );
-
-  $("runtimeStatus").textContent =
-    `Batch ${batch} complete.`;
-
-  setAgent("writer","IDLE");
-  setAgent("director","IDLE");
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-}
-
-/* =========================================================
-   RESEARCH
-========================================================= */
-
-async function runResearch(){
-
-  setAgent("research","WORKING");
-  setFloorStatus("RESEARCH LAB ACTIVE");
-  animatePacket(true);
-
-  log("Research Lab started.","ok");
-
-  const b = bible();
-
-  const prompt = `
-You are a research assistant for a manhwa YouTube production studio.
-
-PROJECT:
-${b.title}
-
-WORLD:
-${b.world}
-
-CURRENT MEMORY:
-${b.memory}
-
-Produce useful research/context for the story.
-
-Separate:
-- summary
-- useful facts
-- how each fact can improve the story
-- warnings about uncertain information
-
-Do not invent claims and present them as verified facts.
-
-Return JSON only.
-`;
-
-  const result =
-    await geminiRequest(
-      prompt,
-      researchSchema
-    );
-
-  lastJSON = result;
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  $("narrationOutput").value +=
-    `\n\n===== RESEARCH =====\n${result.summary}\n\n` +
-    result.facts.map(x=>"• "+x).join("\n");
-
-  saveWorkspace();
-
-  setAgent("research","IDLE");
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-
-  log("Research completed.","ok");
-}
-
-/* =========================================================
-   SCRIPT
-========================================================= */
-
-async function runScript(){
-
-  setAgent("writer","WORKING");
-  setAgent("voice","WORKING");
-
-  setFloorStatus("SCRIPT WRITER ACTIVE");
-  animatePacket(true);
-
-  const source =
-    $("narrationOutput").value.trim();
-
-  if(!source){
-    throw new Error(
-      "No story/narration available."
-    );
-  }
-
-  const prompt = `
-You are a professional Hindi/Hinglish YouTube manhwa narrator.
-
-Rewrite the following raw material into a clean,
-high-retention narration.
-
-RULES:
-- Natural Hinglish.
-- Conversational.
-- Strong hooks.
-- No fake facts.
-- No excessive English.
-- Keep the story order.
-- Short paragraphs.
-- Suitable for voiceover.
-- Do not include production notes.
-
-RAW MATERIAL:
-${source.slice(-30000)}
-
-Return JSON only:
-
-{
-  "script":"..."
-}
-`;
-
-  const schema = {
-    type:"object",
-    properties:{
-      script:{type:"string"}
-    },
-    required:["script"]
-  };
-
-  const result =
-    await geminiRequest(prompt,schema);
-
-  lastJSON = result;
-
-  $("narrationOutput").value =
-    result.script;
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  saveWorkspace();
-
-  setAgent("writer","IDLE");
-  setAgent("voice","IDLE");
-
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-
-  log("Narration script optimized.","ok");
-}
-
-/* =========================================================
-   VISUAL
-========================================================= */
-
-async function runVisual(){
-
-  setAgent("director","WORKING");
-  setAgent("voice","WORKING");
-
-  setFloorStatus("VISUAL FORGE ACTIVE");
-  animatePacket(true);
-
-  const source =
-    $("narrationOutput").value.trim();
-
-  if(!source){
-    throw new Error("No narration available.");
-  }
-
-  const prompt = `
-You are the visual director of a Korean manhwa
-YouTube production pipeline.
-
-Create image prompts for each numbered narration scene.
-
-STYLE:
-${$("styleAnchor").value}
-
-CHARACTER:
-${$("mcSpecs").value}
-
-WORLD:
-${$("worldRules").value}
-
-NARRATION:
-${source.slice(-40000)}
-
-For each scene create a highly specific 16:9
-image-generation prompt.
-
-Include:
-- subject
-- pose
-- environment
-- camera
-- composition
-- lighting
-- atmosphere
-- continuity details
-- cinematic manhwa rendering
-
-No text inside image.
-
-Return JSON only.
-`;
-
-  const schema = {
-    type:"object",
-    properties:{
-      prompts:{
-        type:"array",
-        items:{
-          type:"object",
-          properties:{
-            scene_id:{type:"integer"},
-            image_prompt:{type:"string"}
-          },
-          required:[
-            "scene_id",
-            "image_prompt"
-          ]
-        }
-      }
-    },
-    required:["prompts"]
-  };
-
-  const result =
-    await geminiRequest(prompt,schema);
-
-  lastJSON = result;
-
-  $("promptsOutput").value =
-    result.prompts
-      .map(x=>`[SCENE ${x.scene_id}]\n${x.image_prompt}`)
-      .join("\n\n");
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  saveWorkspace();
-
-  setAgent("director","IDLE");
-  setAgent("voice","IDLE");
-
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-
-  switchOutput("prompts");
-
-  log(
-    `Visual Forge generated ${result.prompts.length} prompts.`,
-    "ok"
-  );
-}
-
-/* =========================================================
-   CONTINUITY
-========================================================= */
-
-async function runContinuity(){
-
-  setAgent("writer","WORKING");
-  setAgent("director","WORKING");
-
-  setFloorStatus("MEMORY ENGINE ACTIVE");
-  animatePacket(true);
-
-  const source =
-    $("narrationOutput").value.trim();
-
-  const prompt = `
-You are the continuity editor for a long-running manhwa
-adaptation.
-
-CURRENT MEMORY:
-${$("continuityBuffer").value}
-
-RECENT STORY:
-${source.slice(-35000)}
-
-Create compact long-term story memory.
-
-Track:
-- important events
-- character state
-- powers
-- relationships
-- locations
-- unresolved threads
-- next logical direction
-
-Avoid unnecessary prose.
-
-Return JSON only.
-`;
-
-  const result =
-    await geminiRequest(
-      prompt,
-      memorySchema
-    );
-
-  lastJSON = result;
-
-  const memory =
-`STORY MEMORY
-${result.memory}
-
-CHARACTERS
-${result.characters}
-
-UNRESOLVED THREADS
-${result.unresolved_threads}
-
-NEXT DIRECTION
-${result.next_direction}`;
-
-  $("continuityBuffer").value = memory;
-  $("memoryView").textContent = memory;
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  saveWorkspace();
-
-  setAgent("writer","IDLE");
-  setAgent("director","IDLE");
-
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-
-  log("Continuity memory compressed.","ok");
-}
-
-/* =========================================================
-   DIRECTOR
-========================================================= */
-
-async function runDirector(){
-
-  setAgent("director","WORKING");
-
-  setFloorStatus("DIRECTOR ACTIVE");
-  animatePacket(true);
-
-  const source =
-    $("narrationOutput").value.trim();
-
-  const prompt = `
-You are a cinematic manhwa director.
-
-Project:
-${$("storyTitle").value}
-
-Character:
-${$("mcSpecs").value}
-
-Narration:
-${source.slice(-30000)}
-
-For each numbered scene plan:
-- purpose
-- action
-- camera
-- emotion
-- transition
-
-Make the visual sequence cinematic and coherent.
-
-Return JSON only.
-`;
-
-  const result =
-    await geminiRequest(
-      prompt,
-      directorSchema
-    );
-
-  lastJSON = result;
-
-  $("jsonOutput").value =
-    JSON.stringify(result,null,2);
-
-  let output = "";
-
-  result.scenes.forEach(scene=>{
-    output +=
-`SCENE ${scene.scene_id}
-PURPOSE: ${scene.purpose}
-ACTION: ${scene.action}
-CAMERA: ${scene.camera}
-EMOTION: ${scene.emotion}
-TRANSITION: ${scene.transition}
-
-`;
-  });
-
-  $("promptsOutput").value = output;
-
-  saveWorkspace();
-
-  setAgent("director","IDLE");
-  animatePacket(false);
-  setFloorStatus("ALL AGENTS IDLE");
-
-  switchOutput("prompts");
-
-  log("Director finished scene planning.","ok");
-}
-
-/* =========================================================
-   WORKFLOW ROUTER
-========================================================= */
-
-async function runSelectedWorkflow(){
-
-  if(isRunning) return;
-
-  isRunning = true;
-
-  $("statStatus").textContent = "RUNNING";
-
-  try{
-
-    switch(selectedWorkflow){
-
-      case "story":
-        await runStory();
-        break;
-
-      case "research":
-        await runResearch();
-        break;
-
-      case "script":
-        await runScript();
-        break;
-
-      case "visual":
-        await runVisual();
-        break;
-
-      case "continuity":
-        await runContinuity();
-        break;
-
-      case "director":
-        await runDirector();
-        break;
-
-      default:
-        throw new Error("Unknown workflow.");
-    }
-
-    toast("Workflow completed.");
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    Object.keys(agents)
-      .forEach(x=>setAgent(x,"ERROR"));
-
-    animatePacket(false);
-    setFloorStatus("AGENT ERROR");
-
-    $("runtimeStatus").textContent =
-      "ERROR: " + error.message;
-
-    log(
-      "Workflow failed: " + error.message,
-      "err"
-    );
-
-    toast("Workflow failed.");
-
-  }
-  finally{
-
-    isRunning = false;
-
-    setTimeout(()=>{
-      Object.keys(agents)
-        .forEach(x=>setAgent(x,"IDLE"));
-
-      setFloorStatus("ALL AGENTS IDLE");
-
-      $("statStatus").textContent = "IDLE";
-
-    },2500);
-  }
-}
-
-function stopGeneration(){
-
-  isRunning = false;
-
-  animatePacket(false);
-
-  Object.keys(agents)
-    .forEach(x=>setAgent(x,"IDLE"));
-
-  setFloorStatus("STOPPED");
-
-  $("statStatus").textContent = "STOPPED";
-
-  $("runtimeStatus").textContent =
-    "Generation stopped by user.";
-
-  log("Generation stopped by user.","warn");
-}
-
-/* =========================================================
-   TEST API
-========================================================= */
-
-async function testGemini(){
-
-  try{
-
-    $("runtimeStatus").textContent =
-      "Testing Gemini connection...";
-
-    log("Testing Gemini API...");
-
-    const schema = {
-      type:"object",
-      properties:{
-        ok:{type:"boolean"},
-        message:{type:"string"}
-      },
-      required:["ok","message"]
-    };
-
-    const result =
-      await geminiRequest(
-        `Reply with {"ok":true,"message":"MANHWA HQ ONLINE"}.`,
-        schema
-      );
-
-    updateConnection(true);
-
-    log(
-      "Gemini connection successful.",
-      "ok"
-    );
-
-    $("runtimeStatus").textContent =
-      result.message || "Gemini online.";
-
-    toast("Gemini API working.");
-
-  }
-  catch(error){
-
-    updateConnection(false);
-
-    log(
-      "Gemini test failed: "+error.message,
-      "err"
-    );
-
-    $("runtimeStatus").textContent =
-      error.message;
-
-    toast("Gemini connection failed.");
-  }
-}
-
-/* =========================================================
-   OUTPUT TABS
-========================================================= */
-
-function switchOutput(type){
-
-  $("narrationOutput").style.display =
-    type==="narration" ? "block":"none";
-
-  $("promptsOutput").style.display =
-    type==="prompts" ? "block":"none";
-
-  $("jsonOutput").style.display =
-    type==="json" ? "block":"none";
-
-  $("tabNarration").classList.toggle(
-    "active",
-    type==="narration"
-  );
-
-  $("tabPrompts").classList.toggle(
-    "active",
-    type==="prompts"
-  );
-
-  $("tabJSON").classList.toggle(
-    "active",
-    type==="json"
-  );
-}
-
-/* =========================================================
-   COPY / DOWNLOAD
-========================================================= */
-
-async function copyOutput(){
-
-  let text = "";
-
-  if($("narrationOutput").style.display !== "none"){
-    text = $("narrationOutput").value;
-  }
-  else if($("promptsOutput").style.display !== "none"){
-    text = $("promptsOutput").value;
-  }
-  else{
-    text = $("jsonOutput").value;
-  }
-
-  if(!text){
-    toast("Nothing to copy.");
-    return;
-  }
-
-  await navigator.clipboard.writeText(text);
-
-  toast("Copied.");
-}
-
-function downloadFile(name,text,type="text/plain"){
-
-  if(!text){
-    toast("Nothing to download.");
-    return;
-  }
-
-  const blob =
-    new Blob([text],{type});
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
-  a.href = url;
-  a.download = name;
-
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-
-  setTimeout(()=>{
-    URL.revokeObjectURL(url);
-  },1000);
-}
-
-function downloadNarration(){
-  downloadFile(
-    "manhwa_narration.txt",
-    $("narrationOutput").value
-  );
-}
-
-function downloadPrompts(){
-  downloadFile(
-    "google_flow_prompts.txt",
-    $("promptsOutput").value
-  );
-}
-
-function downloadJSON(){
-  downloadFile(
-    "manhwa_project.json",
-    $("jsonOutput").value,
-    "application/json"
-  );
-}
-
-/* =========================================================
-   PROJECT SAVE
-========================================================= */
-
-function getProject(){
-
-  return {
-
-    version:3,
-
-    workflow:selectedWorkflow,
-
-    storyTitle:$("storyTitle").value,
-
-    mcSpecs:$("mcSpecs").value,
-
-    worldRules:$("worldRules").value,
-
-    styleAnchor:$("styleAnchor").value,
-
-    currentBatch:$("currentBatch").value,
-
-    targetBatches:$("targetBatches").value,
-
-    scenesPerBatch:$("scenesPerBatch").value,
-
-    thinkingLevel:$("thinkingLevel").value,
-
-    model:$("modelSelect").value,
-
-    continuityBuffer:$("continuityBuffer").value,
-
-    narration:$("narrationOutput").value,
-
-    prompts:$("promptsOutput").value,
-
-    raw:$("jsonOutput").value,
-
-    memory:$("memoryView").textContent,
-
-    savedAt:new Date().toISOString()
-  };
-}
-
-function saveWorkspace(){
-
-  localStorage.setItem(
-    STORAGE.project,
-    JSON.stringify(getProject())
-  );
-
-  localStorage.setItem(
-    STORAGE.narration,
-    $("narrationOutput").value
-  );
-
-  localStorage.setItem(
-    STORAGE.prompts,
-    $("promptsOutput").value
-  );
-
-  localStorage.setItem(
-    STORAGE.raw,
-    $("jsonOutput").value
-  );
-
-  localStorage.setItem(
-    STORAGE.memory,
-    $("memoryView").textContent
-  );
-
-  updateStats();
-}
-
-function saveProject(){
-
-  saveWorkspace();
-
-  toast("Project saved locally.");
-
-  log("Project checkpoint saved.","ok");
-}
-
-function loadProject(){
-
-  const raw =
-    localStorage.getItem(STORAGE.project);
-
-  if(!raw){
-    toast("No saved project.");
-    return;
-  }
-
-  try{
-
-    const p = JSON.parse(raw);
-
-    $("storyTitle").value = p.storyTitle || "";
-    $("mcSpecs").value = p.mcSpecs || "";
-    $("worldRules").value = p.worldRules || "";
-    $("styleAnchor").value = p.styleAnchor || "";
-
-    $("currentBatch").value =
-      p.currentBatch || 1;
-
-    $("targetBatches").value =
-      p.targetBatches || 12;
-
-    $("scenesPerBatch").value =
-      p.scenesPerBatch || 50;
-
-    $("thinkingLevel").value =
-      p.thinkingLevel || "medium";
-
-    $("modelSelect").value =
-      p.model || "gemini-3.7-flash";
-
-    $("continuityBuffer").value =
-      p.continuityBuffer || "";
-
-    $("narrationOutput").value =
-      p.narration || "";
-
-    $("promptsOutput").value =
-      p.prompts || "";
-
-    $("jsonOutput").value =
-      p.raw || "";
-
-    $("memoryView").textContent =
-      p.memory || "No memory.";
-
-    selectedWorkflow =
-      p.workflow || "story";
-
-    document
-      .querySelectorAll(".workflow")
-      .forEach(button=>{
-        button.classList.toggle(
-          "active",
-          button.dataset.workflow === selectedWorkflow
-        );
-      });
-
-    updateStats();
-
-    toast("Project loaded.");
-
-    log("Project restored from local storage.","ok");
-
-  }
-  catch(e){
-
-    toast("Project file is corrupted.");
-    log(
-      "Project restore failed.",
-      "err"
-    );
-  }
-}
-
-/* =========================================================
-   EXPORT / IMPORT
-========================================================= */
-
-function exportProject(){
-
-  const project =
-    getProject();
-
-  downloadFile(
-    "manhwa_hq_project.json",
-    JSON.stringify(project,null,2),
-    "application/json"
-  );
-
-  log("Project exported.","ok");
-}
-
-function importProject(){
-
-  const input =
-    document.createElement("input");
-
-  input.type = "file";
-  input.accept = ".json,application/json";
-
-  input.onchange = async event=>{
-
-    const file =
-      event.target.files[0];
-
-    if(!file) return;
-
-    try{
-
-      const text =
-        await file.text();
-
-      const project =
-        JSON.parse(text);
-
-      localStorage.setItem(
-        STORAGE.project,
-        JSON.stringify(project)
-      );
-
-      loadProject();
-
-      toast("Project imported.");
-
-    }
-    catch(e){
-
-      toast("Invalid project JSON.");
-
-      log(
-        "Project import failed.",
-        "err"
-      );
-    }
-  };
-
-  input.click();
-}
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function clearOutputs(){
-
-  if(
-    !confirm(
-      "Clear narration, prompts and raw JSON?"
-    )
-  ) return;
-
-  $("narrationOutput").value = "";
-  $("promptsOutput").value = "";
-  $("jsonOutput").value = "";
-
-  saveWorkspace();
-
-  updateStats();
-
-  toast("Outputs cleared.");
-}
-
-function resetProject(){
-
-  if(
-    !confirm(
-      "Reset the entire Manhwa HQ project?"
-    )
-  ) return;
-
-  Object.values(STORAGE)
-    .filter(k => k !== STORAGE.key)
-    .forEach(k => localStorage.removeItem(k));
-
-  location.reload();
-}
-
-/* =========================================================
-   LOG STORAGE
-========================================================= */
-
-function saveLogs(){
-
-  const items =
-    [...$("activityLog").children]
-      .map(x=>x.outerHTML);
-
-  localStorage.setItem(
-    STORAGE.logs,
-    JSON.stringify(items)
-  );
-}
-
-function loadLogs(){
-
-  const raw =
-    localStorage.getItem(STORAGE.logs);
-
-  if(!raw) return;
-
-  try{
-
-    const items =
-      JSON.parse(raw);
-
-    $("activityLog").innerHTML =
-      items.join("");
-
-  }
-  catch(e){}
-}
-
-function clearLogs(){
-
-  $("activityLog").innerHTML = "";
-
-  saveLogs();
-
-  log("Activity log cleared.","ok");
-}
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function updateStats(){
-
-  const narration =
-    $("narrationOutput").value;
-
-  const scenes =
-    (narration.match(/\d+/g) || []).length;
-
-  const words =
-    narration
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .length;
-
-  const batch =
-    Math.max(
-      0,
-      parseInt($("currentBatch").value || 1)-1
-    );
-
-  $("statScenes").textContent =
-    scenes;
-
-  $("statWords").textContent =
-    words;
-
-  $("statBatches").textContent =
-    batch;
-
-  const total =
-    parseInt($("targetBatches").value || 12);
-
-  const pct =
-    Math.min(
-      100,
-      Math.max(
-        0,
-        (batch/total)*100
-      )
-    );
-
-  $("progressFill").style.width =
-    pct+"%";
-
-  $("progressText").textContent =
-    Math.round(pct)+"%";
-
-  $("batchText").textContent =
-    `Batch ${Math.min(batch+1,total)} / ${total}`;
-}
 
 /* =========================================================
    INIT
 ========================================================= */
 
-function init(){
+window.addEventListener("load",()=>{
 
-  loadLogs();
+    loadSettings();
 
-  const key =
-    localStorage.getItem(STORAGE.key);
-
-  updateConnection(!!key);
-
-  if(localStorage.getItem(STORAGE.project)){
     loadProject();
-  }
-  else{
 
-    $("narrationOutput").value =
-      localStorage.getItem(STORAGE.narration) || "";
+    updateStats();
 
-    $("promptsOutput").value =
-      localStorage.getItem(STORAGE.prompts) || "";
+});
 
-    $("jsonOutput").value =
-      localStorage.getItem(STORAGE.raw) || "";
 
-    $("memoryView").textContent =
-      localStorage.getItem(STORAGE.memory) ||
-      "No story memory generated yet.";
-  }
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-  $("targetBatches")
-    .addEventListener("input",updateStats);
+function loadSettings(){
 
-  $("currentBatch")
-    .addEventListener("input",updateStats);
+    const key =
+        localStorage.getItem(
+            "survival_gemini_key"
+        );
 
-  $("scenesPerBatch")
-    .addEventListener("change",updateStats);
+    const storyModel =
+        localStorage.getItem(
+            "survival_story_model"
+        ) ||
+        "gemini-3.6-flash";
 
-  setInterval(saveWorkspace,15000);
+    const visualModel =
+        localStorage.getItem(
+            "survival_visual_model"
+        ) ||
+        "gemini-3.5-flash-lite";
 
-  updateStats();
 
-  log(
-    "MANHWA HQ initialized.",
-    "ok"
-  );
+    if(key){
+
+        $("apiKey").value = key;
+
+        setApiStatus(true);
+
+    }
+
+
+    $("storyModel").value =
+        storyModel;
+
+    $("visualModel").value =
+        visualModel;
+
 }
 
-init();
 
-</script></body>
+function saveSettings(){
+
+    const key =
+        $("apiKey").value.trim();
+
+    if(!key){
+
+        toast(
+            "Gemini API key missing."
+        );
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "survival_gemini_key",
+        key
+    );
+
+    localStorage.setItem(
+        "survival_story_model",
+        $("storyModel").value
+    );
+
+    localStorage.setItem(
+        "survival_visual_model",
+        $("visualModel").value
+    );
+
+
+    setApiStatus(true);
+
+    closeSettings();
+
+    toast(
+        "AI configuration saved."
+    );
+
+}
+
+
+function setApiStatus(ok){
+
+    const el =
+        $("apiStatus");
+
+    if(ok){
+
+        el.innerText =
+            "🟢 AI READY";
+
+        el.style.background =
+            "#dff3df";
+
+    }else{
+
+        el.innerText =
+            "🔴 NO API";
+
+    }
+
+}
+
+
+function openSettings(){
+
+    $("settingsModal")
+        .classList
+        .add("show");
+
+}
+
+
+function closeSettings(){
+
+    $("settingsModal")
+        .classList
+        .remove("show");
+
+}
+
+
+/* =========================================================
+   PROJECT SAVE
+========================================================= */
+
+function saveProject(){
+
+    const project = {
+
+        storyTitle:
+            $("storyTitle").value,
+
+        genre:
+            $("genre").value,
+
+        character:
+            $("character").value,
+
+        world:
+            $("world").value,
+
+        storyGoal:
+            $("storyGoal").value,
+
+        memory:
+            $("memory").value,
+
+        batchNo:
+            $("batchNo").value,
+
+        totalBatches:
+            $("totalBatches").value,
+
+        scenesPerBatch:
+            $("scenesPerBatch").value,
+
+        language:
+            $("language").value,
+
+        script:
+            state.script,
+
+        prompts:
+            state.prompts,
+
+        scenes:
+            state.scenes
+
+    };
+
+
+    localStorage.setItem(
+        "survival_story_project",
+        JSON.stringify(project)
+    );
+
+}
+
+
+function loadProject(){
+
+    const raw =
+        localStorage.getItem(
+            "survival_story_project"
+        );
+
+    if(!raw)
+        return;
+
+
+    try{
+
+        const p =
+            JSON.parse(raw);
+
+
+        Object.keys(p).forEach(key=>{
+
+            const el =
+                $(key);
+
+            if(el && key !== "script"
+                && key !== "prompts"
+                && key !== "scenes"){
+
+                el.value =
+                    p[key];
+
+            }
+
+        });
+
+
+        state.script =
+            p.script || "";
+
+        state.prompts =
+            p.prompts || "";
+
+        state.scenes =
+            p.scenes || 0;
+
+
+        $("scriptOutput").value =
+            state.script;
+
+        $("promptOutput").value =
+            state.prompts;
+
+        $("memoryOutput").value =
+            $("memory").value;
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
+}
+
+
+/* =========================================================
+   NEW PROJECT
+========================================================= */
+
+function newProject(){
+
+    if(
+        !confirm(
+            "Start a new project? Current saved project will be cleared."
+        )
+    )
+        return;
+
+
+    localStorage.removeItem(
+        "survival_story_project"
+    );
+
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function showTab(name){
+
+    const panels = [
+        "scriptPanel",
+        "promptsPanel",
+        "memoryPanel",
+        "debugPanel"
+    ];
+
+    panels.forEach(id=>{
+        $(id).classList.add("hidden");
+    });
+
+
+    $(name+"Panel")
+        .classList
+        .remove("hidden");
+
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(btn=>{
+            btn.classList.remove("active");
+        });
+
+
+    event.target.classList.add("active");
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function toast(message){
+
+    const t =
+        $("toast");
+
+    t.innerText =
+        message;
+
+    t.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(()=>{
+            t.classList.remove("show");
+        },3000);
+
+}
+
+
+/* =========================================================
+   LOGGING
+========================================================= */
+
+function log(message,type=""){
+
+    const time =
+        new Date()
+            .toLocaleTimeString(
+                [],
+                {
+                    hour:"2-digit",
+                    minute:"2-digit",
+                    second:"2-digit"
+                }
+            );
+
+
+    const line =
+        document.createElement("div");
+
+    line.className =
+        "log";
+
+    line.innerHTML = `
+        <span class="time">
+            ${time}
+        </span>
+        —
+        <span class="${type}">
+            ${escapeHtml(message)}
+        </span>
+    `;
+
+
+    $("activity")
+        .prepend(line);
+
+
+    state.logs.push(
+        `[${time}] ${message}`
+    );
+
+
+    $("debugOutput").value =
+        state.logs.join("\n");
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(str){
+
+    return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   AGENT ANIMATION
+========================================================= */
+
+function agentThink(agentId,active=true){
+
+    const el =
+        $("agent"+agentId);
+
+    if(active){
+
+        el.classList.add(
+            "thinking"
+        );
+
+    }else{
+
+        el.classList.remove(
+            "thinking"
+        );
+
+    }
+
+}
+
+
+function workflowStep(
+    number,
+    status,
+    done=false
+){
+
+    const step =
+        $("step"+number);
+
+    const stateEl =
+        $("state"+number);
+
+
+    step.classList.remove(
+        "active",
+        "done"
+    );
+
+
+    if(status==="working"){
+
+        step.classList.add(
+            "active"
+        );
+
+        stateEl.innerText =
+            "Working...";
+
+    }
+
+    else if(done){
+
+        step.classList.add(
+            "done"
+        );
+
+        stateEl.innerText =
+            "Complete ✓";
+
+    }
+
+    else{
+
+        stateEl.innerText =
+            "Waiting";
+
+    }
+
+}
+
+
+/* =========================================================
+   MAIL ANIMATION
+========================================================= */
+
+function sendMail(){
+
+    const mail =
+        $("mail");
+
+    mail.classList.remove("fly");
+
+    void mail.offsetWidth;
+
+    mail.classList.add("fly");
+
+}
+
+
+/* =========================================================
+   GEMINI API
+========================================================= */
+
+async function callGemini(
+    model,
+    prompt,
+    schema
+){
+
+    const key =
+        localStorage.getItem(
+            "survival_gemini_key"
+        );
+
+
+    if(!key){
+
+        throw new Error(
+            "Gemini API key missing."
+        );
+
+    }
+
+
+    /*
+       Current Gemini REST endpoint.
+       Structured JSON response is requested.
+    */
+
+    const url =
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+
+
+    const body = {
+
+        contents:[
+            {
+                parts:[
+                    {
+                        text:prompt
+                    }
+                ]
+            }
+        ],
+
+        generationConfig:{
+
+            temperature:.75,
+
+            responseMimeType:
+                "application/json",
+
+            responseSchema:
+                schema
+
+        }
+
+    };
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(body)
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if(!response.ok){
+
+        throw new Error(
+            data?.error?.message ||
+            `HTTP ${response.status}`
+        );
+
+    }
+
+
+    const text =
+        data
+            ?.candidates?.[0]
+            ?.content?.parts?.[0]
+            ?.text;
+
+
+    if(!text){
+
+        throw new Error(
+            "Gemini returned empty output."
+        );
+
+    }
+
+
+    try{
+
+        return JSON.parse(text);
+
+    }catch(e){
+
+        /*
+           Emergency JSON extraction.
+        */
+
+        const start =
+            text.indexOf("{");
+
+        const end =
+            text.lastIndexOf("}");
+
+        if(
+            start >= 0 &&
+            end > start
+        ){
+
+            return JSON.parse(
+                text.slice(
+                    start,
+                    end+1
+                )
+            );
+
+        }
+
+
+        throw new Error(
+            "Invalid JSON returned by Gemini."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SCHEMA
+========================================================= */
+
+const storySchema = {
+
+    type:"object",
+
+    properties:{
+
+        scenes:{
+            type:"array",
+
+            items:{
+
+                type:"object",
+
+                properties:{
+
+                    narration:{
+                        type:"string"
+                    },
+
+                    visual_brief:{
+                        type:"string"
+                    },
+
+                    scene_function:{
+                        type:"string"
+                    }
+
+                },
+
+                required:[
+                    "narration",
+                    "visual_brief",
+                    "scene_function"
+                ]
+            }
+        },
+
+        next_memory:{
+            type:"string"
+        }
+
+    },
+
+    required:[
+        "scenes",
+        "next_memory"
+    ]
+
+};
+
+
+const visualSchema = {
+
+    type:"object",
+
+    properties:{
+
+        style_dna:{
+            type:"string"
+        },
+
+        prompts:{
+            type:"array",
+
+            items:{
+                type:"string"
+            }
+
+        }
+
+    },
+
+    required:[
+        "style_dna",
+        "prompts"
+    ]
+
+};
+
+
+/* =========================================================
+   BUILD STORY PROMPT
+========================================================= */
+
+function buildStoryPrompt(){
+
+    const title =
+        $("storyTitle").value;
+
+    const genre =
+        $("genre").value;
+
+    const character =
+        $("character").value;
+
+    const world =
+        $("world").value;
+
+    const goal =
+        $("storyGoal").value;
+
+    const memory =
+        $("memory").value;
+
+    const batch =
+        Number(
+            $("batchNo").value
+        );
+
+    const scenes =
+        Number(
+            $("scenesPerBatch").value
+        );
+
+    const language =
+        $("language").value;
+
+
+    let languageInstruction =
+        "natural Hinglish";
+
+    if(language==="hindi")
+        languageInstruction =
+            "natural conversational Hindi";
+
+    if(language==="english")
+        languageInstruction =
+            "natural conversational English";
+
+
+    return `
+
+ROLE:
+You are the Story Director of a professional survival
+documentary/web-story production studio.
+
+PROJECT:
+${title}
+
+GENRE:
+${genre}
+
+MAIN CHARACTER:
+${character}
+
+WORLD:
+${world}
+
+STORY GOAL:
+${goal}
+
+PREVIOUS MEMORY:
+${memory}
+
+CURRENT BATCH:
+${batch}
+
+SCENES:
+Generate exactly ${scenes} scenes.
+
+LANGUAGE:
+Write narration in ${languageInstruction}.
+
+NARRATION RULES:
+
+- Each narration should normally be 14-24 words.
+- It must sound natural when spoken by an AI narrator.
+- No headings.
+- No bullet points.
+- No "Scene one", "Scene two".
+- No camera directions inside narration.
+- No meta commentary.
+- Keep pacing engaging.
+- Focus on survival decisions, environment, tension,
+  discovery, resources, weather, shelter, hunger,
+  uncertainty and consequences.
+- Do not artificially insert action in every scene.
+- Let quiet survival moments exist.
+- Avoid repetitive descriptions.
+- Maintain character personality.
+- Maintain physical continuity.
+- Remember previous events.
+
+VISUAL BRIEF RULES:
+
+Create a concise visual description for each scene.
+
+Do NOT name copyrighted characters.
+
+Do NOT request an exact imitation of a named artist
+or copyrighted franchise.
+
+Describe original characters using their physical
+appearance and clothing.
+
+Avoid unnecessary graphic gore.
+
+If dangerous events happen, describe them cinematically
+without graphic injury detail.
+
+The visual brief should contain:
+subject + environment + action + emotional state.
+
+IMPORTANT:
+This is an original survival story.
+
+Return ONLY valid JSON matching the schema.
+
+`;
+
+
+}
+
+
+/* =========================================================
+   VISUAL PROMPT ARCHITECT
+========================================================= */
+
+function buildVisualPrompt(
+    sceneBriefs
+){
+
+    const world =
+        $("world").value;
+
+    const character =
+        $("character").value;
+
+    const genre =
+        $("genre").value;
+
+
+    return `
+
+ROLE:
+You are the Visual Prompt Architect.
+
+Your ONLY job is to transform scene briefs into
+high-quality Google Flow image prompts.
+
+PROJECT GENRE:
+${genre}
+
+WORLD:
+${world}
+
+CHARACTER BIBLE:
+${character}
+
+STYLE DNA:
+Create ONE consistent visual identity and preserve it
+for every prompt.
+
+VISUAL TARGET:
+
+- beautiful cinematic survival illustration
+- professional concept-art quality
+- highly detailed natural environment
+- believable materials
+- realistic lighting behavior
+- subtle atmospheric depth
+- natural skin texture
+- natural fabric texture
+- detailed foliage
+- realistic rocks, wood, soil and weather
+- cinematic composition
+- controlled color grading
+- pleasant visual harmony
+- no harsh oversaturated neon colors
+- no plastic-looking AI skin
+- no generic fantasy poster appearance
+- no obvious AI artifacts
+- no distorted anatomy
+- no extra fingers
+- no duplicate objects
+- no random text
+- no logos
+- no watermark
+
+STYLE:
+Original cinematic survival illustration with
+a polished webtoon/concept-art influence,
+but NOT an imitation of any named artist,
+studio or copyrighted franchise.
+
+FORMAT:
+16:9 widescreen.
+
+CHARACTER CONSISTENCY:
+Keep the same:
+- face
+- hair
+- age
+- body proportions
+- clothing
+- backpack
+- important props
+
+ENVIRONMENT CONSISTENCY:
+Keep believable geography and weather continuity.
+
+PROMPT SAFETY:
+
+Never use:
+- named copyrighted characters
+- named artist imitation
+- franchise style imitation
+- explicit gore
+- graphic dismemberment
+- sexualized descriptions
+- exploitative injury descriptions
+
+If a scene contains dangerous action,
+rewrite it as cinematic non-graphic survival action.
+
+SCENES:
+
+${sceneBriefs
+    .map(
+        (s,i)=>
+            `${i+1}. ${s}`
+    )
+    .join("\n")}
+
+Return JSON only.
+
+For every scene produce ONE final image prompt.
+
+The prompt should be self-contained enough that
+Google Flow can understand it without the original story.
+
+`;
+
+
+}
+
+
+/* =========================================================
+   EXTRA PROMPT GUARD
+========================================================= */
+
+function safetyRewritePrompt(
+    prompts
+){
+
+    return `
+
+You are the final Prompt Safety Editor.
+
+Review the following image prompts.
+
+Your job is NOT to change the story.
+
+Your job is to make each prompt:
+1. safe
+2. generator-friendly
+3. visually beautiful
+4. consistent
+5. original
+6. suitable for a cinematic 16:9 survival image
+
+REMOVE or REWRITE:
+
+- named copyrighted characters
+- named franchises
+- direct artist/style imitation
+- graphic gore
+- graphic injury
+- sexualized descriptions
+- unnecessary violent detail
+- hateful content
+- unsafe exploitative wording
+
+PRESERVE:
+
+- environment
+- survival situation
+- character appearance
+- emotion
+- composition
+- lighting
+- weather
+- important objects
+- visual continuity
+
+If something is risky,
+convert it into a non-graphic cinematic description.
+
+DO NOT return explanations.
+
+Return ONLY JSON.
+
+PROMPTS:
+
+${prompts
+    .map(
+        (p,i)=>
+            `${i+1}. ${p}`
+    )
+    .join("\n")}
+
+`;
+
+
+}
+
+
+/* =========================================================
+   VISUAL SCHEMA
+========================================================= */
+
+const safetySchema = {
+
+    type:"object",
+
+    properties:{
+
+        prompts:{
+            type:"array",
+
+            items:{
+                type:"string"
+            }
+
+        }
+
+    },
+
+    required:[
+        "prompts"
+    ]
+
+};
+
+
+/* =========================================================
+   AUDIO DURATION
+========================================================= */
+
+function calculateDuration(){
+
+    const text =
+        state.script.trim();
+
+
+    if(!text){
+
+        $("minuteCount")
+            .innerText =
+            "0:00";
+
+        return;
+
+    }
+
+
+    const words =
+        text
+            .split(/\s+/)
+            .filter(Boolean)
+            .length;
+
+
+    state.words =
+        words;
+
+
+    /*
+       Survival narration default:
+       approximately 145 words/minute.
+    */
+
+    const minutes =
+        words / 145;
+
+
+    state.minutes =
+        minutes;
+
+
+    const totalSeconds =
+        Math.round(
+            minutes * 60
+        );
+
+
+    const mm =
+        Math.floor(
+            totalSeconds / 60
+        );
+
+    const ss =
+        String(
+            totalSeconds % 60
+        ).padStart(2,"0");
+
+
+    $("minuteCount")
+        .innerText =
+        `${mm}:${ss}`;
+
+}
+
+
+/* =========================================================
+   UPDATE STATS
+========================================================= */
+
+function updateStats(){
+
+    $("sceneCount")
+        .innerText =
+        state.scenes;
+
+
+    $("batchDisplay")
+        .innerText =
+        $("batchNo").value;
+
+
+    calculateDuration();
+
+
+    const total =
+        Number(
+            $("totalBatches").value
+        ) || 1;
+
+
+    const current =
+        Number(
+            $("batchNo").value
+        ) || 1;
+
+
+    const percentage =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                ((current-1)/total)*100
+            )
+        );
+
+
+    $("progressFill")
+        .style.width =
+        percentage+"%";
+
+
+    $("progressText")
+        .innerText =
+        Math.round(
+            percentage
+        )+"%";
+
+}
+
+
+/* =========================================================
+   GENERATION
+========================================================= */
+
+async function startGeneration(){
+
+    if(state.running){
+
+        toast(
+            "Generation already running."
+        );
+
+        return;
+
+    }
+
+
+    const key =
+        localStorage.getItem(
+            "survival_gemini_key"
+        );
+
+
+    if(!key){
+
+        openSettings();
+
+        toast(
+            "First add your Gemini API key."
+        );
+
+        return;
+
+    }
+
+
+    state.running = true;
+    state.paused = false;
+
+
+    $("generateBtn")
+        .innerText =
+        "⏳ RUNNING";
+
+    $("generateBtn")
+        .classList
+        .add("running");
+
+
+    $("floorStatus")
+        .innerText =
+        "WORKING";
+
+
+    log(
+        "Production floor started.",
+        "work"
+    );
+
+
+    try{
+
+        await runCurrentBatch();
+
+    }catch(error){
+
+        console.error(error);
+
+        log(
+            "Production stopped: "+
+            error.message
+        );
+
+        toast(
+            error.message
+        );
+
+    }
+
+
+    state.running = false;
+
+    $("generateBtn")
+        .innerText =
+        "▶ START";
+
+    $("generateBtn")
+        .classList
+        .remove("running");
+
+    $("floorStatus")
+        .innerText =
+        "IDLE";
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+function pauseGeneration(){
+
+    state.paused = true;
+
+    state.running = false;
+
+    $("floorStatus")
+        .innerText =
+        "PAUSED";
+
+    $("generateBtn")
+        .innerText =
+        "▶ RESUME";
+
+    log(
+        "Production paused by user."
+    );
+
+}
+
+
+/* =========================================================
+   BATCH
+========================================================= */
+
+async function runCurrentBatch(){
+
+    const total =
+        Number(
+            $("totalBatches").value
+        );
+
+    let current =
+        Number(
+            $("batchNo").value
+        );
+
+
+    if(current > total){
+
+        toast(
+            "All batches already completed."
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       STORY DIRECTOR
+    ===================== */
+
+    workflowStep(
+        1,
+        "working"
+    );
+
+    agentThink(
+        "Director",
+        true
+    );
+
+    log(
+        `Director planning Batch ${current}.`,
+        "work"
+    );
+
+
+    const storyModel =
+        localStorage.getItem(
+            "survival_story_model"
+        ) ||
+        "gemini-3.6-flash";
+
+
+    const story =
+        await callGemini(
+            storyModel,
+            buildStoryPrompt(),
+            storySchema
+        );
+
+
+    agentThink(
+        "Director",
+        false
+    );
+
+    workflowStep(
+        1,
+        "done",
+        true
+    );
+
+
+    sendMail();
+
+
+    if(!story.scenes ||
+       !story.scenes.length){
+
+        throw new Error(
+            "Story agent returned no scenes."
+        );
+
+    }
+
+
+    /* =====================
+       WRITER
+    ===================== */
+
+    workflowStep(
+        2,
+        "working"
+    );
+
+    agentThink(
+        "Writer",
+        true
+    );
+
+    log(
+        "Narration writer polishing scenes.",
+        "work"
+    );
+
+
+    /*
+       The story agent already creates narration.
+       We clean it here for TTS export.
+    */
+
+    const narration =
+        story.scenes
+            .map(
+                s =>
+                    cleanNarration(
+                        s.narration
+                    )
+            )
+            .join(" ");
+
+
+    state.script +=
+        (
+            state.script
+            ? "\n\n"
+            : ""
+        ) +
+        narration;
+
+
+    agentThink(
+        "Writer",
+        false
+    );
+
+    workflowStep(
+        2,
+        "done",
+        true
+    );
+
+
+    sendMail();
+
+
+    /* =====================
+       VISUAL AI
+    ===================== */
+
+    workflowStep(
+        3,
+        "working"
+    );
+
+    agentThink(
+        "Visual",
+        true
+    );
+
+
+    log(
+        "Visual Architect generating Flow prompts.",
+        "work"
+    );
+
+
+    const visualModel =
+        localStorage.getItem(
+            "survival_visual_model"
+        ) ||
+        "gemini-3.5-flash-lite";
+
+
+    const briefs =
+        story.scenes.map(
+            s =>
+                s.visual_brief
+        );
+
+
+    const visual =
+        await callGemini(
+            visualModel,
+            buildVisualPrompt(
+                briefs
+            ),
+            visualSchema
+        );
+
+
+    agentThink(
+        "Visual",
+        false
+    );
+
+    workflowStep(
+        3,
+        "done",
+        true
+    );
+
+
+    sendMail();
+
+
+    /* =====================
+       PROMPT GUARD
+    ===================== */
+
+    workflowStep(
+        4,
+        "working"
+    );
+
+    agentThink(
+        "Guard",
+        true
+    );
+
+
+    log(
+        "Prompt Guard checking visual prompts.",
+        "work"
+    );
+
+
+    const safe =
+        await callGemini(
+            visualModel,
+            safetyRewritePrompt(
+                visual.prompts || []
+            ),
+            safetySchema
+        );
+
+
+    agentThink(
+        "Guard",
+        false
+    );
+
+    workflowStep(
+        4,
+        "done",
+        true
+    );
+
+
+    /* =====================
+       STYLE DNA
+    ===================== */
+
+    workflowStep(
+        5,
+        "working"
+    );
+
+    log(
+        "Style DNA locked for continuity.",
+        "work"
+    );
+
+
+    if(
+        visual.style_dna
+    ){
+
+        state.styleDNA.visualIdentity =
+            visual.style_dna;
+
+    }
+
+
+    workflowStep(
+        5,
+        "done",
+        true
+    );
+
+
+    /* =====================
+       SAVE PROMPTS
+    ===================== */
+
+    const finalPrompts =
+        safe.prompts ||
+        visual.prompts ||
+        [];
+
+
+    finalPrompts.forEach(
+        (prompt,i)=>{
+
+            state.prompts +=
+                (
+                    state.prompts
+                    ? "\n\n"
+                    : ""
+                ) +
+                `PROMPT ${state.scenes+i+1}\n` +
+                prompt;
+
+        }
+    );
+
+
+    state.scenes +=
+        story.scenes.length;
+
+
+    /* =====================
+       MEMORY
+    ===================== */
+
+    if(
+        story.next_memory
+    ){
+
+        $("memory").value =
+            story.next_memory;
+
+        $("memoryOutput").value =
+            story.next_memory;
+
+    }
+
+
+    /* =====================
+       NEXT BATCH
+    ===================== */
+
+    current++;
+
+    $("batchNo").value =
+        current;
+
+
+    $("scriptOutput").value =
+        state.script;
+
+
+    $("promptOutput").value =
+        state.prompts;
+
+
+    updateStats();
+
+    saveProject();
+
+
+    log(
+        `Batch ${current-1} completed successfully.`,
+        "ok"
+    );
+
+
+    /* =====================
+       WAIT
+    ===================== */
+
+    if(current <= total){
+
+        await delay(1800);
+
+        if(!state.paused){
+
+            await runCurrentBatch();
+
+        }
+
+    }else{
+
+        $("floorStatus")
+            .innerText =
+            "COMPLETE";
+
+        toast(
+            "🎉 Entire survival project completed."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEAN NARRATION
+========================================================= */
+
+function cleanNarration(text){
+
+    if(!text)
+        return "";
+
+
+    let result =
+        String(text);
+
+
+    result =
+        result
+            .replace(
+                /^\s*(scene|narration)\s*\d*\s*[:.-]\s*/i,
+                ""
+            )
+            .replace(
+                /\[[^\]]*\]/g,
+                ""
+            )
+            .replace(
+                /\*\*/g,
+                ""
+            )
+            .replace(
+                /^["']|["']$/g,
+                ""
+            );
+
+
+    return result
+        .replace(/\s+/g," ")
+        .trim();
+
+}
+
+
+/* =========================================================
+   DELAY
+========================================================= */
+
+function delay(ms){
+
+    return new Promise(
+        resolve =>
+            setTimeout(
+                resolve,
+                ms
+            )
+    );
+
+}
+
+
+/* =========================================================
+   COPY SCRIPT
+========================================================= */
+
+async function copyScript(){
+
+    const text =
+        cleanExportScript(
+            state.script
+        );
+
+
+    if(!text){
+
+        toast(
+            "No script available."
+        );
+
+        return;
+
+    }
+
+
+    await navigator
+        .clipboard
+        .writeText(text);
+
+
+    toast(
+        "Clean AI-ready script copied."
+    );
+
+}
+
+
+/* =========================================================
+   EXPORT CLEAN SCRIPT
+========================================================= */
+
+function cleanExportScript(
+    text
+){
+
+    if(!text)
+        return "";
+
+
+    return text
+
+        .replace(
+            /^\s*(scene|scenes)\s*\d*\s*[:.-].*$/gim,
+            ""
+        )
+
+        .replace(
+            /^\s*(narration|voiceover|script)\s*[:.-]\s*/gim,
+            ""
+        )
+
+        .replace(
+            /^\s*(chapter|part|batch)\s*\d+.*$/gim,
+            ""
+        )
+
+        .replace(
+            /^\s*\[[^\]]+\]\s*/gm,
+            ""
+        )
+
+        .replace(
+            /^\s*#+\s*/gm,
+            ""
+        )
+
+        .replace(
+            /\*\*/g,
+            ""
+        )
+
+        .replace(
+            /\n{3,}/g,
+            "\n\n"
+        )
+
+        .trim();
+
+}
+
+
+/* =========================================================
+   DOWNLOAD SCRIPT
+========================================================= */
+
+function downloadScript(){
+
+    const text =
+        cleanExportScript(
+            state.script
+        );
+
+
+    if(!text){
+
+        toast(
+            "Nothing to download."
+        );
+
+        return;
+
+    }
+
+
+    downloadFile(
+        "ai_ready_survival_script.txt",
+        text
+    );
+
+
+    toast(
+        "AI-ready script downloaded."
+    );
+
+}
+
+
+/* =========================================================
+   DOWNLOAD PROMPTS
+========================================================= */
+
+function downloadPrompts(){
+
+    if(!state.prompts){
+
+        toast(
+            "No prompts available."
+        );
+
+        return;
+
+    }
+
+
+    downloadFile(
+        "google_flow_survival_prompts.txt",
+        state.prompts
+    );
+
+}
+
+
+/* =========================================================
+   GENERIC DOWNLOAD
+========================================================= */
+
+function downloadFile(
+    filename,
+    content
+){
+
+    const blob =
+        new Blob(
+            [content],
+            {
+                type:
+                    "text/plain;charset=utf-8"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        url;
+
+    a.download =
+        filename;
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(
+        ()=>{
+            URL.revokeObjectURL(
+                url
+            );
+        },
+        1000
+    );
+
+}
+
+
+/* =========================================================
+   MEMORY
+========================================================= */
+
+function saveMemory(){
+
+    $("memory").value =
+        $("memoryOutput").value;
+
+    saveProject();
+
+    toast(
+        "Story memory saved."
+    );
+
+}
+
+
+/* =========================================================
+   AUTO SAVE INPUTS
+========================================================= */
+
+[
+    "storyTitle",
+    "genre",
+    "character",
+    "world",
+    "storyGoal",
+    "memory",
+    "batchNo",
+    "totalBatches",
+    "scenesPerBatch",
+    "language"
+].forEach(id=>{
+
+    const el =
+        $(id);
+
+    if(el){
+
+        el.addEventListener(
+            "input",
+            ()=>{
+                saveProject();
+                updateStats();
+            }
+        );
+
+        el.addEventListener(
+            "change",
+            ()=>{
+                saveProject();
+                updateStats();
+            }
+        );
+
+    }
+
+});
+
+
+/* =========================================================
+   KEYBOARD SHORTCUT
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(
+            event.ctrlKey &&
+            event.key==="Enter"
+        ){
+
+            startGeneration();
+
+        }
+
+        if(
+            event.key==="Escape"
+        ){
+
+            closeSettings();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SAFETY FALLBACK
+========================================================= */
+
+window.addEventListener(
+    "error",
+    event=>{
+
+        console.error(
+            "Application error:",
+            event.error
+        );
+
+    }
+);
+
+</script>
+
+</body>
 </html>
