@@ -1,552 +1,3053 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scranton Manhwa Engine // Munder-Difflin UI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-canvas: #f2efe9;
-      --paper-white: #fdfbf7;
-      --dunder-blue: #1c3b57;
-      --dunder-blue-hover: #12283c;
-      --dunder-tan: #ded8cb;
-      --dunder-tan-dark: #b8af9c;
-      --text-main: #24221f;
-      --text-muted: #6e6a61;
-      --accent-red: #a83232;
-      --accent-green: #2d6a4f;
-      --border-retro: 2px solid var(--text-main);
-      --retro-shadow: 4px 4px 0px var(--text-main);
-      --retro-shadow-sm: 2px 2px 0px var(--text-main);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#10151c">
+<title>MANHWA HQ // AI STORY OFFICE</title><style>
+/* =========================================================
+   MANHWA HQ
+   Single-file AI Manhwa Production Office
+   ========================================================= */
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
-    body {
-      background-color: var(--bg-canvas);
-      background-image: radial-gradient(var(--dunder-tan-dark) 1px, transparent 1px);
-      background-size: 24px 24px;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      padding: 24px;
-      min-height: 100vh;
-    }
+:root{
+  --bg:#090d12;
+  --bg2:#10161e;
+  --panel:#151c25;
+  --panel2:#1a222d;
+  --paper:#e9dfc8;
+  --paper2:#d8ccb2;
+  --ink:#17191d;
+  --white:#f4f0e6;
+  --muted:#8d98a7;
+  --line:#344150;
+  --blue:#55b7ff;
+  --cyan:#53e0d0;
+  --green:#72d58a;
+  --yellow:#f5c95b;
+  --red:#ff6878;
+  --purple:#b998ff;
+  --orange:#ff9b61;
+  --shadow:6px 6px 0 #05070a;
+  --pixel:"Press Start 2P",monospace;
+  --mono:"Space Mono",monospace;
+  --ui:"Inter",sans-serif;
+}
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-    /* Vintage Desktop Header */
-    header {
-      background: var(--paper-white);
-      border: var(--border-retro);
-      box-shadow: var(--retro-shadow);
-      padding: 16px 24px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+html,body{
+  min-height:100%;
+}
 
-    .brand-title {
-      font-weight: 800;
-      font-size: 1.35rem;
-      letter-spacing: -0.5px;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+body{
+  background:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px),
+    var(--bg);
+  background-size:24px 24px;
+  color:var(--white);
+  font-family:var(--ui);
+  overflow-x:hidden;
+}
 
-    .brand-tag {
-      background: var(--dunder-blue);
-      color: var(--paper-white);
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 2px;
-      font-family: 'Courier Prime', monospace;
-    }
+/* CRT / scanline effect */
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255,255,255,.012) 4px
+  );
+  z-index:9999;
+}
 
-    .api-auth-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
 
-    input[type="password"], input[type="text"], textarea, select {
-      background: var(--paper-white);
-      border: var(--border-retro);
-      padding: 8px 12px;
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.9rem;
-      color: var(--text-main);
-      box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
-    }
+button{
+  cursor:pointer;
+}
 
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      background: #ffffff;
-      border-color: var(--dunder-blue);
-    }
+/* =========================================================
+   TOP BAR
+   ========================================================= */
 
-    button {
-      background: var(--paper-white);
-      border: var(--border-retro);
-      padding: 8px 16px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: var(--retro-shadow-sm);
-      transition: all 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
+.topbar{
+  height:70px;
+  border-bottom:3px solid #05070a;
+  background:#111821;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 5px 0 rgba(0,0,0,.3);
+}
 
-    button:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0px var(--text-main);
-    }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
 
-    button:active {
-      transform: translate(2px, 2px);
-      box-shadow: 0px 0px 0px var(--text-main);
-    }
+.brand-icon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  background:var(--paper);
+  color:#111;
+  border:3px solid #05070a;
+  box-shadow:4px 4px 0 #05070a;
+  font-size:22px;
+}
 
-    button.btn-primary {
-      background: var(--dunder-blue);
-      color: var(--paper-white);
-    }
+.brand h1{
+  font-family:var(--pixel);
+  font-size:13px;
+  letter-spacing:.5px;
+}
 
-    button.btn-primary:hover {
-      background: var(--dunder-blue-hover);
-    }
+.brand small{
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:10px;
+  display:block;
+  margin-top:6px;
+}
 
-    button.btn-green {
-      background: var(--accent-green);
-      color: var(--paper-white);
-    }
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
 
-    button.btn-danger {
-      background: var(--accent-red);
-      color: var(--paper-white);
-    }
+.connection{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+}
 
-    /* Grid Layout */
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 24px;
-    }
+.dot{
+  width:10px;
+  height:10px;
+  border:2px solid #05070a;
+  background:var(--red);
+  box-shadow:2px 2px 0 #05070a;
+}
 
-    @media (max-width: 980px) {
-      .workspace-grid { grid-template-columns: 1fr; }
-    }
+.dot.online{
+  background:var(--green);
+}
 
-    /* Paper Windows */
-    .retro-card {
-      background: var(--paper-white);
-      border: var(--border-retro);
-      box-shadow: var(--retro-shadow);
-      display: flex;
-      flex-direction: column;
-    }
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
-    .card-header {
-      background: var(--dunder-tan);
-      border-bottom: var(--border-retro);
-      padding: 10px 16px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.btn{
+  border:2px solid #05070a;
+  background:#202a35;
+  color:white;
+  padding:9px 12px;
+  box-shadow:3px 3px 0 #05070a;
+  font-weight:800;
+  font-size:11px;
+  text-transform:uppercase;
+  transition:.12s;
+}
 
-    .card-body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+.btn:hover{
+  transform:translate(-1px,-1px);
+  filter:brightness(1.15);
+}
 
-    label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      display: block;
-    }
+.btn:active{
+  transform:translate(3px,3px);
+  box-shadow:0 0 0 #05070a;
+}
 
-    .status-badge {
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.75rem;
-      padding: 2px 6px;
-      border: 1px solid var(--text-main);
-      background: #e4e0d5;
-    }
+.btn.primary{
+  background:var(--blue);
+  color:#071018;
+}
 
-    /* Split Outputs */
-    .tabs-nav {
-      display: flex;
-      border-bottom: var(--border-retro);
-      background: var(--dunder-tan);
-    }
+.btn.green{
+  background:var(--green);
+  color:#07120a;
+}
 
-    .tab-btn {
-      border: none;
-      border-right: var(--border-retro);
-      box-shadow: none;
-      padding: 10px 18px;
-      background: transparent;
-      border-radius: 0;
-    }
+.btn.red{
+  background:var(--red);
+  color:#18070a;
+}
 
-    .tab-btn.active {
-      background: var(--paper-white);
-      font-weight: 800;
-    }
+.btn.yellow{
+  background:var(--yellow);
+  color:#171006;
+}
 
-    .output-box {
-      width: 100%;
-      height: 480px;
-      font-size: 0.85rem;
-      line-height: 1.5;
-      resize: vertical;
-      background: #faf8f5;
-    }
+.btn.purple{
+  background:var(--purple);
+  color:#11071c;
+}
 
-    .actions-footer {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+/* =========================================================
+   APP LAYOUT
+   ========================================================= */
 
-    .batch-progress-bar {
-      height: 12px;
-      width: 100%;
-      background: var(--dunder-tan);
-      border: var(--border-retro);
-      overflow: hidden;
-      margin-top: 8px;
-    }
+.app{
+  max-width:1600px;
+  margin:auto;
+  padding:18px;
+}
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent-green);
-      transition: width 0.3s ease;
-    }
-  </style>
-</head>
-<body>
+.grid{
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr) 340px;
+  gap:16px;
+}
 
-<div class="container">
-  <!-- Top Navigation & Login -->
-  <header>
-    <div class="brand-title">
-      📄 Scranton Paper Co. // Manhwa Engine
-      <span class="brand-tag">v2.4 LOCAL-STORAGE</span>
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel{
+  background:var(--panel);
+  border:2px solid #05070a;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.panel-head{
+  min-height:48px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 12px;
+  background:var(--panel2);
+  border-bottom:2px solid #05070a;
+}
+
+.panel-title{
+  font-family:var(--pixel);
+  font-size:10px;
+  color:var(--paper);
+}
+
+.panel-body{
+  padding:12px;
+}
+
+/* =========================================================
+   LEFT NAV
+   ========================================================= */
+
+.workflow-list{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.workflow{
+  border:2px solid var(--line);
+  background:#111820;
+  color:#dce2e9;
+  padding:11px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  transition:.12s;
+}
+
+.workflow:hover{
+  border-color:var(--blue);
+  transform:translateX(2px);
+}
+
+.workflow.active{
+  background:#1d3141;
+  border-color:var(--blue);
+  box-shadow:3px 3px 0 #05070a;
+}
+
+.workflow-icon{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  background:#26313d;
+  border:2px solid #05070a;
+  font-size:15px;
+}
+
+.workflow strong{
+  font-size:12px;
+  display:block;
+}
+
+.workflow small{
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:9px;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:14px;
+}
+
+.stat{
+  background:#0d131a;
+  border:2px solid var(--line);
+  padding:10px;
+}
+
+.stat b{
+  display:block;
+  font-family:var(--pixel);
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:9px;
+  font-family:var(--mono);
+}
+
+/* =========================================================
+   OFFICE
+   ========================================================= */
+
+.office{
+  min-height:500px;
+}
+
+.office-canvas{
+  position:relative;
+  min-height:560px;
+  overflow:hidden;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),
+    #151d26;
+  background-size:32px 32px;
+}
+
+.room{
+  position:absolute;
+  border:2px solid #394756;
+  background:rgba(10,15,21,.35);
+}
+
+.room-label{
+  position:absolute;
+  top:-1px;
+  left:-1px;
+  background:#273441;
+  border:2px solid #05070a;
+  padding:5px 7px;
+  font-family:var(--pixel);
+  font-size:7px;
+  color:var(--paper);
+}
+
+.room.writer{
+  left:18px;
+  top:20px;
+  width:47%;
+  height:245px;
+}
+
+.room.director{
+  right:18px;
+  top:20px;
+  width:47%;
+  height:245px;
+}
+
+.room.research{
+  left:18px;
+  bottom:20px;
+  width:47%;
+  height:235px;
+}
+
+.room.voice{
+  right:18px;
+  bottom:20px;
+  width:47%;
+  height:235px;
+}
+
+.agent{
+  position:absolute;
+  width:110px;
+  text-align:center;
+  transition:.5s;
+}
+
+.agent-avatar{
+  width:58px;
+  height:58px;
+  margin:auto;
+  border:3px solid #05070a;
+  background:var(--paper);
+  box-shadow:4px 4px 0 #05070a;
+  display:grid;
+  place-items:center;
+  font-size:29px;
+  position:relative;
+}
+
+.agent-avatar:after{
+  content:"";
+  position:absolute;
+  bottom:-8px;
+  width:30px;
+  height:5px;
+  background:#05070a;
+}
+
+.agent-name{
+  margin-top:10px;
+  font-family:var(--pixel);
+  font-size:7px;
+}
+
+.agent-role{
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:8px;
+  margin-top:5px;
+}
+
+.agent-status{
+  display:inline-block;
+  margin-top:5px;
+  padding:3px 5px;
+  border:1px solid #05070a;
+  background:#202a35;
+  font-size:8px;
+  font-family:var(--mono);
+}
+
+.agent.working .agent-avatar{
+  animation:bob .65s infinite alternate steps(2);
+  box-shadow:
+    4px 4px 0 #05070a,
+    0 0 18px rgba(85,183,255,.35);
+}
+
+.agent.working .agent-status{
+  color:var(--green);
+}
+
+.agent.error .agent-status{
+  color:var(--red);
+}
+
+@keyframes bob{
+  from{transform:translateY(0)}
+  to{transform:translateY(-5px)}
+}
+
+#aWriter{left:25%;top:105px}
+#aDirector{right:25%;top:105px}
+#aResearch{left:25%;bottom:90px}
+#aVoice{right:25%;bottom:90px}
+
+/* animated packet */
+.packet{
+  position:absolute;
+  width:9px;
+  height:9px;
+  background:var(--yellow);
+  border:2px solid #05070a;
+  display:none;
+  z-index:10;
+}
+
+.packet.fly{
+  display:block;
+  animation:packetMove 1.4s linear infinite;
+}
+
+@keyframes packetMove{
+  0%{left:27%;top:145px}
+  45%{left:48%;top:290px}
+  100%{left:73%;top:145px}
+}
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+.workspace{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.card{
+  background:#111820;
+  border:2px solid #05070a;
+}
+
+.card h3{
+  padding:10px;
+  font-family:var(--pixel);
+  font-size:9px;
+  background:#202b36;
+  border-bottom:2px solid #05070a;
+}
+
+.card-body{
+  padding:12px;
+}
+
+label{
+  display:block;
+  color:#9ba6b3;
+  font-family:var(--mono);
+  font-size:9px;
+  margin-bottom:5px;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  border:2px solid var(--line);
+  background:#0b1117;
+  color:#f3f3f3;
+  padding:10px;
+  outline:none;
+  font-family:var(--mono);
+  font-size:11px;
+}
+
+textarea{
+  resize:vertical;
+  min-height:100px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:var(--blue);
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+/* =========================================================
+   OUTPUT
+   ========================================================= */
+
+.output{
+  min-height:330px;
+  white-space:pre-wrap;
+  line-height:1.55;
+}
+
+.tabs{
+  display:flex;
+  border-bottom:2px solid #05070a;
+}
+
+.tab{
+  flex:1;
+  padding:10px;
+  border:0;
+  border-right:2px solid #05070a;
+  background:#1b242e;
+  color:#b8c1cb;
+  font-family:var(--pixel);
+  font-size:8px;
+}
+
+.tab.active{
+  background:var(--paper);
+  color:#111;
+}
+
+.output-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:10px;
+}
+
+/* =========================================================
+   RIGHT ACTIVITY
+   ========================================================= */
+
+.log{
+  max-height:350px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.log-item{
+  background:#0d131a;
+  border-left:3px solid var(--blue);
+  padding:8px;
+  font-family:var(--mono);
+  font-size:9px;
+  line-height:1.5;
+}
+
+.log-item.ok{border-color:var(--green)}
+.log-item.warn{border-color:var(--yellow)}
+.log-item.err{border-color:var(--red)}
+
+.log-time{
+  color:#687483;
+  margin-right:5px;
+}
+
+.memory{
+  max-height:210px;
+  overflow:auto;
+  color:#b9c3cd;
+  font-family:var(--mono);
+  font-size:9px;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.progress{
+  height:16px;
+  background:#090d12;
+  border:2px solid #05070a;
+  overflow:hidden;
+}
+
+.progress-fill{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:.3s;
+}
+
+.progress-text{
+  display:flex;
+  justify-content:space-between;
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* =========================================================
+   API MODAL
+   ========================================================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:5000;
+  padding:18px;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modal-box{
+  width:min(600px,100%);
+  background:#151c25;
+  border:3px solid #05070a;
+  box-shadow:9px 9px 0 #05070a;
+}
+
+.modal-head{
+  padding:14px;
+  background:var(--paper);
+  color:#111;
+  font-family:var(--pixel);
+  font-size:10px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.modal-body{
+  padding:15px;
+}
+
+.notice{
+  background:#201c10;
+  border:2px solid #6c5a28;
+  padding:10px;
+  font-size:10px;
+  line-height:1.5;
+  color:#e8d89d;
+  margin-bottom:12px;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  background:#111820;
+  border:2px solid #05070a;
+  box-shadow:4px 4px 0 #05070a;
+  padding:12px 14px;
+  max-width:330px;
+  font-family:var(--mono);
+  font-size:10px;
+  transform:translateY(150px);
+  opacity:0;
+  transition:.2s;
+  z-index:9000;
+}
+
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:1200px){
+  .grid{
+    grid-template-columns:240px minmax(0,1fr);
+  }
+
+  .right-column{
+    grid-column:1/-1;
+  }
+}
+
+@media(max-width:800px){
+  .topbar{
+    height:auto;
+    min-height:70px;
+    padding:10px;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .brand h1{
+    font-size:9px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .right-column{
+    grid-column:auto;
+  }
+
+  .workspace{
+    grid-template-columns:1fr;
+  }
+
+  .office-canvas{
+    min-height:680px;
+  }
+
+  .room.writer,
+  .room.director,
+  .room.research,
+  .room.voice{
+    width:calc(100% - 36px);
+    left:18px;
+    right:auto;
+    height:145px;
+  }
+
+  .room.writer{top:15px}
+  .room.director{top:175px}
+  .room.research{bottom:175px}
+  .room.voice{bottom:15px}
+
+  #aWriter,
+  #aDirector,
+  #aResearch,
+  #aVoice{
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    top:auto;
+    bottom:auto;
+  }
+
+  #aWriter{top:52px}
+  #aDirector{top:212px}
+  #aResearch{bottom:212px}
+  #aVoice{bottom:52px}
+
+  .agent-avatar{
+    width:46px;
+    height:46px;
+    font-size:22px;
+  }
+
+  .agent-name{
+    font-size:6px;
+  }
+
+  .top-actions{
+    width:100%;
+  }
+
+  .top-actions .btn{
+    flex:1;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,
+  *:before,
+  *:after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
+</style></head><body><header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">📄</div>
+    <div>
+      <h1>MANHWA HQ // AI STORY OFFICE</h1>
+      <small>PIXEL PRODUCTION FLOOR • v3.0 • GEMINI WORKBENCH</small>
     </div>
-    <div class="api-auth-bar">
-      <input type="password" id="geminiApiKey" placeholder="Paste Gemini API Key (Free)" style="width: 260px;" />
-      <button class="btn-primary" onclick="saveApiKey()">Save Key</button>
-      <span id="authStatus" class="status-badge">NO KEY</span>
-    </div>
-  </header>
+  </div>  <div class="top-actions">
+    <div class="connection">
+      <span id="connectionDot" class="dot"></span>
+      <span id="connectionText">OFFLINE</span>
+    </div><button class="btn" onclick="openApiModal()">⚙ API</button>
+<button class="btn" onclick="saveProject()">💾 SAVE</button>
+<button class="btn" onclick="loadProject()">📂 LOAD</button>
 
-  <div class="workspace-grid">
-    <!-- Left Column: Settings & Story Controls -->
-    <div class="retro-card">
-      <div class="card-header">
-        <span>Story Parameters (Bible)</span>
-        <button onclick="resetProject()" style="padding: 2px 6px; font-size: 0.7rem;">Reset</button>
-      </div>
-      <div class="card-body">
-        <div>
-          <label>Series Title & Genre</label>
-          <input type="text" id="storyTitle" style="width:100%" value="Shadow Monarch Rebirth (Dark Fantasy / Dungeons)" />
-        </div>
-        <div>
-          <label>Main Character Specs</label>
-          <input type="text" id="mcSpecs" style="width:100%" value="Jin-Woo: Black hair, glowing blue eyes, black dagger, shadow powers" />
-        </div>
-        <div>
-          <label>16:9 Art Style Anchor</label>
-          <textarea id="styleAnchor" rows="2" style="width:100%">manhwa webtoon style, solo leveling art, dynamic lighting, sharp lineart, 16:9 widescreen, high contrast</textarea>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <div>
-            <label>Current Batch</label>
-            <input type="text" id="currentBatchNo" value="1" readonly style="width:100%; background:#e4e0d5;" />
-          </div>
-          <div>
-            <label>Target Total Batches</label>
-            <input type="number" id="targetBatches" value="12" min="1" max="100" style="width:100%" />
-          </div>
-        </div>
-        <div>
-          <label>Continuity Buffer (Story Memory)</label>
-          <textarea id="continuityBuffer" rows="3" style="width:100%">Story starts fresh: MC enters an E-Rank dungeon looking for crystals.</textarea>
-        </div>
+  </div>
+</header><main class="app"><div class="grid"><!-- ======================================================
+     LEFT SIDEBAR
+====================================================== --><aside class="panel">
+  <div class="panel-head">
+    <span class="panel-title">WORKFLOWS</span>
+  </div>  <div class="panel-body"><div class="workflow-list">
 
-        <div>
-          <label>Execution Status</label>
-          <div id="runtimeStatus" style="font-family:'Courier Prime'; font-size:0.8rem; color:var(--text-muted)">Ready to generate.</div>
-          <div class="batch-progress-bar">
-            <div id="progressBar" class="progress-fill"></div>
-          </div>
-        </div>
+  <button class="workflow active" data-workflow="story" onclick="selectWorkflow('story',this)">
+    <span class="workflow-icon">📖</span>
+    <span>
+      <strong>Story Forge</strong>
+      <small>50-scene batches</small>
+    </span>
+  </button>
 
-        <div class="actions-footer" style="margin-top: 10px;">
-          <button id="startBtn" class="btn-green" style="width:100%; justify-content:center;" onclick="toggleGeneration()">
-            ▶ Start Auto-Batch Generation
-          </button>
-        </div>
-      </div>
-    </div>
+  <button class="workflow" data-workflow="research" onclick="selectWorkflow('research',this)">
+    <span class="workflow-icon">🔍</span>
+    <span>
+      <strong>Research Lab</strong>
+      <small>Facts & context</small>
+    </span>
+  </button>
 
-    <!-- Right Column: Output Tabs & Download Center -->
-    <div class="retro-card">
-      <div class="tabs-nav">
-        <button class="tab-btn active" onclick="switchTab('narrationTab')">1. Voiceover Script (.txt)</button>
-        <button class="tab-btn" onclick="switchTab('promptsTab')">2. Google Flow Prompts (.txt)</button>
-      </div>
-      <div class="card-body">
-        <!-- Tab 1: Narration Script -->
-        <div id="narrationTab" class="tab-pane">
-          <textarea id="narrationOutput" class="output-box" placeholder="Your clean YouTube explanation script will appear here batch by batch..."></textarea>
-          <div class="actions-footer">
-            <button onclick="downloadTextFile('narration_script.txt', 'narrationOutput')">💾 Download Script (.txt)</button>
-            <button onclick="copyToClipboard('narrationOutput')">📋 Copy Script</button>
-          </div>
-        </div>
+  <button class="workflow" data-workflow="script" onclick="selectWorkflow('script',this)">
+    <span class="workflow-icon">✍️</span>
+    <span>
+      <strong>Script Writer</strong>
+      <small>YouTube narration</small>
+    </span>
+  </button>
 
-        <!-- Tab 2: Google Flow Prompts -->
-        <div id="promptsTab" class="tab-pane" style="display:none;">
-          <textarea id="promptsOutput" class="output-box" placeholder="Line-by-line 16:9 Manhwa image prompts for Google Flow Agent Mode will appear here..."></textarea>
-          <div class="actions-footer">
-            <button onclick="downloadTextFile('google_flow_prompts.txt', 'promptsOutput')">💾 Download Prompts (.txt)</button>
-            <button onclick="copyToClipboard('promptsOutput')">📋 Copy All Prompts</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <button class="workflow" data-workflow="visual" onclick="selectWorkflow('visual',this)">
+    <span class="workflow-icon">🎨</span>
+    <span>
+      <strong>Visual Forge</strong>
+      <small>Flow prompts</small>
+    </span>
+  </button>
+
+  <button class="workflow" data-workflow="continuity" onclick="selectWorkflow('continuity',this)">
+    <span class="workflow-icon">🧠</span>
+    <span>
+      <strong>Continuity</strong>
+      <small>Story memory</small>
+    </span>
+  </button>
+
+  <button class="workflow" data-workflow="director" onclick="selectWorkflow('director',this)">
+    <span class="workflow-icon">🎬</span>
+    <span>
+      <strong>Director</strong>
+      <small>Scene planning</small>
+    </span>
+  </button>
+
+</div>
+
+<div class="stat-grid">
+  <div class="stat">
+    <b id="statScenes">0</b>
+    <span>SCENES</span>
+  </div>
+
+  <div class="stat">
+    <b id="statBatches">0</b>
+    <span>BATCHES</span>
+  </div>
+
+  <div class="stat">
+    <b id="statWords">0</b>
+    <span>WORDS</span>
+  </div>
+
+  <div class="stat">
+    <b id="statStatus">IDLE</b>
+    <span>STATUS</span>
   </div>
 </div>
 
-<script>
-  let isGenerating = false;
+<div style="margin-top:14px">
+  <button class="btn green" style="width:100%" onclick="runSelectedWorkflow()">
+    ▶ RUN WORKFLOW
+  </button>
+</div>
 
-  // Initialize from LocalStorage
-  window.onload = function() {
-    const savedKey = localStorage.getItem("scranton_gemini_key");
-    if (savedKey) {
-      document.getElementById("geminiApiKey").value = savedKey;
-      document.getElementById("authStatus").innerText = "KEY SAVED";
-      document.getElementById("authStatus").style.background = "#cce3de";
-    }
-    
-    // Restore Saved Workspace
-    if (localStorage.getItem("scranton_narration")) {
-      document.getElementById("narrationOutput").value = localStorage.getItem("scranton_narration");
-    }
-    if (localStorage.getItem("scranton_prompts")) {
-      document.getElementById("promptsOutput").value = localStorage.getItem("scranton_prompts");
-    }
-    if (localStorage.getItem("scranton_buffer")) {
-      document.getElementById("continuityBuffer").value = localStorage.getItem("scranton_buffer");
-    }
-    if (localStorage.getItem("scranton_batch")) {
-      document.getElementById("currentBatchNo").value = localStorage.getItem("scranton_batch");
-    }
-    updateProgress();
+<div style="margin-top:8px">
+  <button class="btn red" style="width:100%" onclick="stopGeneration()">
+    ■ STOP
+  </button>
+</div>
+
+  </div>
+</aside><!-- ======================================================
+     CENTER
+====================================================== --><section><div class="panel office">  <div class="panel-head">
+    <span class="panel-title">MANHWA PRODUCTION FLOOR</span>
+    <span id="floorStatus" style="font-family:var(--mono);font-size:9px;color:var(--muted)">
+      ALL AGENTS IDLE
+    </span>
+  </div>  <div class="office-canvas"><div class="room writer">
+  <div class="room-label">WRITER ROOM</div>
+</div>
+
+<div class="room director">
+  <div class="room-label">DIRECTOR ROOM</div>
+</div>
+
+<div class="room research">
+  <div class="room-label">RESEARCH LAB</div>
+</div>
+
+<div class="room voice">
+  <div class="room-label">VOICE / VISUAL</div>
+</div>
+
+<div id="aWriter" class="agent">
+  <div class="agent-avatar">✍️</div>
+  <div class="agent-name">PENNY</div>
+  <div class="agent-role">STORY WRITER</div>
+  <span class="agent-status">IDLE</span>
+</div>
+
+<div id="aDirector" class="agent">
+  <div class="agent-avatar">🎬</div>
+  <div class="agent-name">MICHAEL</div>
+  <div class="agent-role">DIRECTOR</div>
+  <span class="agent-status">IDLE</span>
+</div>
+
+<div id="aResearch" class="agent">
+  <div class="agent-avatar">🔍</div>
+  <div class="agent-name">DWIGHT</div>
+  <div class="agent-role">RESEARCHER</div>
+  <span class="agent-status">IDLE</span>
+</div>
+
+<div id="aVoice" class="agent">
+  <div class="agent-avatar">🎨</div>
+  <div class="agent-name">PAM</div>
+  <div class="agent-role">VISUAL DESIGNER</div>
+  <span class="agent-status">IDLE</span>
+</div>
+
+<div id="packet" class="packet"></div>
+
+  </div></div><!-- ======================================================
+     STORY BIBLE
+====================================================== --><div class="workspace"><div class="card">
+  <h3>📕 STORY BIBLE</h3>  <div class="card-body"><div class="field">
+  <label>Series Title / Genre</label>
+  <input id="storyTitle"
+  value="Shadow Monarch Rebirth — Dark Fantasy / Dungeon">
+</div>
+
+<div class="field">
+  <label>Main Character</label>
+  <input id="mcSpecs"
+  value="Jin-Woo: black hair, glowing blue eyes, black dagger, shadow powers">
+</div>
+
+<div class="field">
+  <label>World / Rules</label>
+  <textarea id="worldRules">Hunters enter dangerous dungeons. Ranks range from E to S. The MC starts weak but possesses a hidden shadow ability.</textarea>
+</div>
+
+<div class="field">
+  <label>16:9 Visual Style Anchor</label>
+  <textarea id="styleAnchor">cinematic Korean manhwa webtoon, sharp lineart, dramatic lighting, deep shadows, dynamic perspective, detailed environment, high contrast, 16:9 widescreen</textarea>
+</div>
+
+<div class="two">
+
+  <div class="field">
+    <label>Current Batch</label>
+    <input id="currentBatch" type="number" value="1" min="1">
+  </div>
+
+  <div class="field">
+    <label>Total Batches</label>
+    <input id="targetBatches" type="number" value="12" min="1" max="100">
+  </div>
+
+</div>
+
+<div class="field">
+  <label>Continuity Memory</label>
+  <textarea id="continuityBuffer">Story starts fresh. MC enters an E-Rank dungeon looking for crystals.</textarea>
+</div>
+
+  </div>
+</div><!-- ======================================================
+     EXECUTION
+====================================================== --><div class="card">  <h3>⚡ EXECUTION CONTROL</h3>  <div class="card-body"><div class="field">
+  <label>Gemini Model</label>
+
+  <select id="modelSelect">
+    <option value="gemini-3.7-flash">Gemini 3.7 Flash — Recommended</option>
+    <option value="gemini-3.6-flash">Gemini 3.6 Flash — Faster</option>
+    <option value="gemini-3.5-flash">Gemini 3.5 Flash — Legacy</option>
+    <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
+  </select>
+</div>
+
+<div class="field">
+  <label>Thinking Level</label>
+
+  <select id="thinkingLevel">
+    <option value="low">LOW — Fast</option>
+    <option value="medium" selected>MEDIUM — Balanced</option>
+    <option value="high">HIGH — Quality</option>
+  </select>
+</div>
+
+<div class="field">
+  <label>Scenes Per Batch</label>
+
+  <select id="scenesPerBatch">
+    <option value="10">10 — Safe / Fast</option>
+    <option value="25">25</option>
+    <option value="50" selected>50 — Full Batch</option>
+  </select>
+</div>
+
+<div class="field">
+
+  <label>PROGRESS</label>
+
+  <div class="progress">
+    <div id="progressFill" class="progress-fill"></div>
+  </div>
+
+  <div class="progress-text">
+    <span id="progressText">0%</span>
+    <span id="batchText">Batch 1 / 12</span>
+  </div>
+
+</div>
+
+<div class="field">
+
+  <label>RUNTIME STATUS</label>
+
+  <div id="runtimeStatus"
+  style="
+  border:2px solid var(--line);
+  background:#0b1117;
+  padding:12px;
+  min-height:80px;
+  font-family:var(--mono);
+  font-size:10px;
+  line-height:1.6;
+  color:#aab4bf;">
+  System ready.
+  </div>
+
+</div>
+
+<div class="two">
+
+  <button class="btn primary" onclick="runSelectedWorkflow()">
+    ▶ START
+  </button>
+
+  <button class="btn yellow" onclick="testGemini()">
+    ⚡ TEST API
+  </button>
+
+</div>
+
+  </div></div></div><!-- ======================================================
+     OUTPUT
+====================================================== --><div class="panel" style="margin-top:16px">  <div class="tabs"><button id="tabNarration"
+class="tab active"
+onclick="switchOutput('narration')">
+  🎙 NARRATION
+</button>
+
+<button id="tabPrompts"
+class="tab"
+onclick="switchOutput('prompts')">
+  🎨 FLOW PROMPTS
+</button>
+
+<button id="tabJSON"
+class="tab"
+onclick="switchOutput('json')">
+  {} RAW JSON
+</button>
+
+  </div>  <div class="panel-body"><textarea id="narrationOutput"
+class="output"
+placeholder="Narration will appear here..."></textarea>
+
+<textarea id="promptsOutput"
+class="output"
+style="display:none"
+placeholder="Image prompts will appear here..."></textarea>
+
+<textarea id="jsonOutput"
+class="output"
+style="display:none"
+placeholder="Raw structured JSON..."></textarea>
+
+<div class="output-actions">
+
+  <button class="btn" onclick="copyOutput()">📋 COPY</button>
+
+  <button class="btn" onclick="downloadNarration()">💾 TXT</button>
+
+  <button class="btn" onclick="downloadPrompts()">🎨 PROMPTS</button>
+
+  <button class="btn purple" onclick="downloadJSON()">{} JSON</button>
+
+  <button class="btn red" onclick="clearOutputs()">🗑 CLEAR</button>
+
+</div>
+
+  </div></div></section><!-- ======================================================
+     RIGHT SIDEBAR
+====================================================== --><aside class="right-column"><div class="panel">  <div class="panel-head">
+    <span class="panel-title">AGENT COMMS</span>
+    <button class="btn" style="padding:5px 7px;font-size:8px" onclick="clearLogs()">
+      CLEAR
+    </button>
+  </div>  <div class="panel-body"><div id="activityLog" class="log">
+
+  <div class="log-item ok">
+    <span class="log-time">SYSTEM</span>
+    Office initialized.
+  </div>
+
+  <div class="log-item">
+    <span class="log-time">SYSTEM</span>
+    Waiting for Gemini API key.
+  </div>
+
+</div>
+
+  </div></div><div class="panel" style="margin-top:16px">  <div class="panel-head">
+    <span class="panel-title">LONG-TERM MEMORY</span>
+  </div>  <div class="panel-body"><div id="memoryView" class="memory">
+
+No story memory generated yet.
+</div>
+
+  </div></div><div class="panel" style="margin-top:16px">  <div class="panel-head">
+    <span class="panel-title">PROJECT</span>
+  </div>  <div class="panel-body"><button class="btn" style="width:100%;margin-bottom:7px" onclick="exportProject()">
+  📦 EXPORT PROJECT
+</button>
+
+<button class="btn" style="width:100%;margin-bottom:7px" onclick="importProject()">
+  📥 IMPORT PROJECT
+</button>
+
+<button class="btn red" style="width:100%" onclick="resetProject()">
+  ☢ RESET PROJECT
+</button>
+
+  </div></div></aside></div></main><!-- ======================================================
+     API MODAL
+====================================================== --><div id="apiModal" class="modal">  <div class="modal-box"><div class="modal-head">
+  <span>GEMINI CONNECTION</span>
+
+  <button
+  class="btn"
+  style="padding:5px 8px"
+  onclick="closeApiModal()">X</button>
+</div>
+
+<div class="modal-body">
+
+  <div class="notice">
+    Your API key is stored in this browser's localStorage.
+    Do not use this client-side architecture for a public production website
+    where the key must remain secret.
+  </div>
+
+  <div class="field">
+    <label>Gemini API Key</label>
+
+    <input
+    id="apiKeyInput"
+    type="password"
+    placeholder="AIza...">
+  </div>
+
+  <div class="two">
+
+    <button class="btn primary" onclick="saveApiKey()">
+      SAVE KEY
+    </button>
+
+    <button class="btn red" onclick="removeApiKey()">
+      REMOVE
+    </button>
+
+  </div>
+
+  <div style="
+  margin-top:12px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:9px;
+  line-height:1.6">
+    Model endpoint: Google Gemini API<br>
+    Default model: gemini-3.7-flash
+  </div>
+
+</div>
+
+  </div></div><div id="toast" class="toast"></div><script>
+/* =========================================================
+   MANHWA HQ ENGINE
+   ========================================================= */
+
+const STORAGE = {
+  key:"manhwa_hq_gemini_key",
+  project:"manhwa_hq_project_v3",
+  narration:"manhwa_hq_narration",
+  prompts:"manhwa_hq_prompts",
+  raw:"manhwa_hq_raw",
+  memory:"manhwa_hq_memory",
+  logs:"manhwa_hq_logs"
+};
+
+let isRunning = false;
+let selectedWorkflow = "story";
+let lastJSON = null;
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const $ = id => document.getElementById(id);
+
+function sleep(ms){
+  return new Promise(resolve => setTimeout(resolve,ms));
+}
+
+function now(){
+  return new Date().toLocaleTimeString([],{
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+  });
+}
+
+function toast(message){
+  const t = $("toast");
+  t.textContent = message;
+  t.classList.add("show");
+
+  setTimeout(()=>{
+    t.classList.remove("show");
+  },2800);
+}
+
+function log(message,type=""){
+  const box = $("activityLog");
+
+  const item = document.createElement("div");
+  item.className = "log-item " + type;
+
+  item.innerHTML =
+    `<span class="log-time">${now()}</span>${escapeHTML(message)}`;
+
+  box.prepend(item);
+
+  while(box.children.length > 40){
+    box.removeChild(box.lastChild);
+  }
+
+  saveLogs();
+}
+
+function escapeHTML(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================================================
+   API KEY
+========================================================= */
+
+function openApiModal(){
+  const key = localStorage.getItem(STORAGE.key) || "";
+  $("apiKeyInput").value = key;
+  $("apiModal").classList.add("open");
+}
+
+function closeApiModal(){
+  $("apiModal").classList.remove("open");
+}
+
+function saveApiKey(){
+  const key = $("apiKeyInput").value.trim();
+
+  if(!key){
+    toast("API key is empty.");
+    return;
+  }
+
+  localStorage.setItem(STORAGE.key,key);
+
+  updateConnection(true);
+
+  closeApiModal();
+
+  log("Gemini API key saved.","ok");
+  toast("Gemini key saved.");
+}
+
+function removeApiKey(){
+  localStorage.removeItem(STORAGE.key);
+
+  $("apiKeyInput").value = "";
+
+  updateConnection(false);
+
+  log("Gemini API key removed.","warn");
+  toast("API key removed.");
+}
+
+function updateConnection(online){
+  const dot = $("connectionDot");
+  const text = $("connectionText");
+
+  if(online){
+    dot.classList.add("online");
+    text.textContent = "KEY READY";
+  }else{
+    dot.classList.remove("online");
+    text.textContent = "NO KEY";
+  }
+}
+
+/* =========================================================
+   WORKFLOW
+========================================================= */
+
+const workflowNames = {
+  story:"Story Forge",
+  research:"Research Lab",
+  script:"Script Writer",
+  visual:"Visual Forge",
+  continuity:"Continuity",
+  director:"Director"
+};
+
+function selectWorkflow(name,button){
+
+  selectedWorkflow = name;
+
+  document
+    .querySelectorAll(".workflow")
+    .forEach(x => x.classList.remove("active"));
+
+  button.classList.add("active");
+
+  log(`Workflow selected: ${workflowNames[name]}`);
+
+  const descriptions = {
+    story:"Full 50-scene manhwa batch production.",
+    research:"Research facts, world details and references.",
+    script:"Convert story material into clean YouTube narration.",
+    visual:"Generate detailed 16:9 Google Flow prompts.",
+    continuity:"Compress latest story events into memory.",
+    director:"Plan scenes, camera, action and visual beats."
   };
 
-  function saveApiKey() {
-    const key = document.getElementById("geminiApiKey").value.trim();
-    if (!key) return alert("Please paste a valid Gemini API Key.");
-    localStorage.setItem("scranton_gemini_key", key);
-    document.getElementById("authStatus").innerText = "KEY SAVED";
-    document.getElementById("authStatus").style.background = "#cce3de";
-    alert("API Key saved safely inside your browser!");
-  }
-
-  function switchTab(tabId) {
-    document.querySelectorAll(".tab-pane").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
-    document.getElementById(tabId).style.display = "block";
-    event.target.classList.add("active");
-  }
-
-  function updateProgress() {
-    const curr = parseInt(document.getElementById("currentBatchNo").value) - 1;
-    const total = parseInt(document.getElementById("targetBatches").value);
-    const pct = Math.min(100, Math.max(0, (curr / total) * 100));
-    document.getElementById("progressBar").style.width = pct + "%";
-  }
-
-  async function toggleGeneration() {
-    const apiKey = localStorage.getItem("scranton_gemini_key");
-    if (!apiKey) return alert("Please enter and save your Gemini API Key first!");
-
-    const btn = document.getElementById("startBtn");
-    if (isGenerating) {
-      isGenerating = false;
-      btn.innerText = "▶ Resume Generation";
-      btn.className = "btn-green";
-      document.getElementById("runtimeStatus").innerText = "Paused by user.";
-      return;
-    }
-
-    isGenerating = true;
-    btn.innerText = "⏸ Pause Generation";
-    btn.className = "btn-danger";
-
-    runBatchLoop(apiKey);
-  }
-
-  async function runBatchLoop(apiKey) {
-    const totalBatches = parseInt(document.getElementById("targetBatches").value);
-
-    while (isGenerating) {
-      let currentBatch = parseInt(document.getElementById("currentBatchNo").value);
-      if (currentBatch > totalBatches) {
-        document.getElementById("runtimeStatus").innerText = " All batches completed successfully!";
-        isGenerating = false;
-        document.getElementById("startBtn").innerText = "▶ Start Auto-Batch Generation";
-        document.getElementById("startBtn").className = "btn-green";
-        break;
-      }
-
-      const startScene = (currentBatch - 1) * 50 + 1;
-      const endScene = currentBatch * 50;
-      const title = document.getElementById("storyTitle").value;
-      const mc = document.getElementById("mcSpecs").value;
-      const style = document.getElementById("styleAnchor").value;
-      const buffer = document.getElementById("continuityBuffer").value;
-
-      document.getElementById("runtimeStatus").innerText = `Writing Batch ${currentBatch}/${totalBatches} (Scenes ${startScene}-${endScene})...`;
-
-      const promptPayload = `
-[ROLE: Elite Korean Webtoon/Manhwa Screenwriter & YouTube Narrator]
-Story: ${title}
-MC Details: ${mc}
-Style Anchor: "${style}"
-
-Batch: ${currentBatch} (Scenes ${startScene} to ${endScene})
-Continuity Context: ${buffer}
-
-RULES:
-1. Har scene ka narration 10-18 words ka conversational Hindi/Hinglish YouTube recap ho (3-5s fast pacing).
-2. Har scene ka detailed 16:9 manhwa prompt do.
-3. OUTPUT: Strictly Valid Raw JSON only.
-
-JSON Format:
-{
-  "scenes": [
-    {"id": ${startScene}, "narration": "...", "image_prompt": "..."}
-  ],
-  "next_scene_buffer": "..."
+  $("runtimeStatus").textContent = descriptions[name];
 }
-      `;
 
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptPayload }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
-        });
+/* =========================================================
+   AGENT CONTROL
+========================================================= */
 
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message);
+const agents = {
+  writer:$("aWriter"),
+  director:$("aDirector"),
+  research:$("aResearch"),
+  voice:$("aVoice")
+};
 
-        const rawJsonText = data.candidates[0].content.parts[0].text;
-        const parsed = JSON.parse(rawJsonText);
+function setAgent(agent,status){
 
-        if (parsed.scenes && parsed.scenes.length > 0) {
-          let narrationsText = "";
-          let promptsText = "";
+  if(!agents[agent]) return;
 
-          parsed.scenes.forEach(sc => {
-            narrationsText += `[${sc.id}] ${sc.narration}\n\n`;
-            promptsText += `${sc.image_prompt}\n`;
-          });
+  const el = agents[agent];
 
-          // Append in Textareas
-          document.getElementById("narrationOutput").value += narrationsText;
-          document.getElementById("promptsOutput").value += promptsText;
+  el.classList.remove("working","error");
 
-          // Update Buffer & Next Batch
-          if (parsed.next_scene_buffer) {
-            document.getElementById("continuityBuffer").value = parsed.next_scene_buffer;
+  const badge = el.querySelector(".agent-status");
+
+  if(status==="WORKING"){
+    el.classList.add("working");
+    badge.textContent = "WORKING";
+  }
+  else if(status==="ERROR"){
+    el.classList.add("error");
+    badge.textContent = "ERROR";
+  }
+  else{
+    badge.textContent = "IDLE";
+  }
+}
+
+function setFloorStatus(text){
+  $("floorStatus").textContent = text;
+}
+
+function animatePacket(enable){
+  $("packet").classList.toggle("fly",enable);
+}
+
+/* =========================================================
+   GEMINI API
+========================================================= */
+
+async function geminiRequest(prompt,schema,retries=4){
+
+  const key = localStorage.getItem(STORAGE.key);
+
+  if(!key){
+    throw new Error("Gemini API key missing. Open API settings.");
+  }
+
+  const model = $("modelSelect").value;
+  const thinking = $("thinkingLevel").value;
+
+  const url =
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+
+  const body = {
+    contents:[
+      {
+        parts:[
+          {
+            text:prompt
           }
-          document.getElementById("currentBatchNo").value = currentBatch + 1;
+        ]
+      }
+    ],
 
-          // Save everything to browser's LocalStorage
-          localStorage.setItem("scranton_narration", document.getElementById("narrationOutput").value);
-          localStorage.setItem("scranton_prompts", document.getElementById("promptsOutput").value);
-          localStorage.setItem("scranton_buffer", document.getElementById("continuityBuffer").value);
-          localStorage.setItem("scranton_batch", currentBatch + 1);
+    generationConfig:{
+      responseMimeType:"application/json",
+      responseSchema:schema
+    }
+  };
 
-          updateProgress();
+  /*
+    Gemini 3.7 supports configurable thinking.
+    Some older model variants may reject this field,
+    therefore retry once without thinking metadata if needed.
+  */
+
+  if(model === "gemini-3.7-flash"){
+    body.generationConfig.thinkingConfig = {
+      thinkingLevel:thinking
+    };
+  }
+
+  let lastError = null;
+
+  for(let attempt=0; attempt<retries; attempt++){
+
+    try{
+
+      const response = await fetch(url,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+      });
+
+      const data = await response.json();
+
+      if(!response.ok || data.error){
+
+        const message =
+          data?.error?.message ||
+          `HTTP ${response.status}`;
+
+        /*
+          Retry rate limits and temporary server errors.
+        */
+
+        if(
+          response.status === 429 ||
+          response.status >= 500
+        ){
+
+          lastError = new Error(message);
+
+          const delay =
+            Math.min(
+              30000,
+              1500 * Math.pow(2,attempt)
+            ) + Math.random()*500;
+
+          log(
+            `API temporary error. Retry ${attempt+1}/${retries} in ${Math.round(delay)}ms`,
+            "warn"
+          );
+
+          await sleep(delay);
+
+          continue;
         }
 
-        // Wait 2 seconds to respect free-tier rate limits
-        await new Promise(r => setTimeout(r, 2000));
+        throw new Error(message);
+      }
 
-      } catch (err) {
-        console.error(err);
-        document.getElementById("runtimeStatus").innerText = `⚠️ Error on Batch ${currentBatch}: ${err.message}`;
-        isGenerating = false;
-        document.getElementById("startBtn").innerText = "▶ Retry Batch";
-        document.getElementById("startBtn").className = "btn-green";
+      const text =
+        data?.candidates?.[0]?.content?.parts
+          ?.map(p => p.text || "")
+          .join("")
+          .trim();
+
+      if(!text){
+        throw new Error("Gemini returned an empty response.");
+      }
+
+      try{
+        return JSON.parse(text);
+      }
+      catch(e){
+        /*
+          Last-resort JSON extraction.
+        */
+
+        const first = text.indexOf("{");
+        const last = text.lastIndexOf("}");
+
+        if(first !== -1 && last !== -1){
+          return JSON.parse(
+            text.slice(first,last+1)
+          );
+        }
+
+        throw new Error(
+          "Gemini returned invalid JSON."
+        );
+      }
+
+    }
+    catch(error){
+
+      lastError = error;
+
+      if(attempt === retries-1){
         break;
       }
+
+      const delay =
+        Math.min(
+          30000,
+          1200 * Math.pow(2,attempt)
+        );
+
+      log(
+        `Request failed. Retry ${attempt+1}/${retries}.`,
+        "warn"
+      );
+
+      await sleep(delay);
     }
   }
 
-  function downloadTextFile(filename, elementId) {
-    const text = document.getElementById(elementId).value;
-    if (!text) return alert("Nothing to download!");
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-  }
+  throw lastError || new Error("Gemini request failed.");
+}
 
-  function copyToClipboard(elementId) {
-    const text = document.getElementById(elementId).value;
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
-  }
+/* =========================================================
+   SCHEMAS
+========================================================= */
 
-  function resetProject() {
-    if (confirm("Reset current story and start a new project?")) {
-      localStorage.removeItem("scranton_narration");
-      localStorage.removeItem("scranton_prompts");
-      localStorage.removeItem("scranton_buffer");
-      localStorage.removeItem("scranton_batch");
-      location.reload();
+const sceneSchema = {
+
+  type:"object",
+
+  properties:{
+
+    scenes:{
+      type:"array",
+      items:{
+        type:"object",
+        properties:{
+          id:{type:"integer"},
+          narration:{type:"string"},
+          image_prompt:{type:"string"}
+        },
+        required:[
+          "id",
+          "narration",
+          "image_prompt"
+        ]
+      }
+    },
+
+    next_scene_buffer:{
+      type:"string"
     }
+
+  },
+
+  required:[
+    "scenes",
+    "next_scene_buffer"
+  ]
+};
+
+const researchSchema = {
+
+  type:"object",
+
+  properties:{
+    summary:{type:"string"},
+
+    facts:{
+      type:"array",
+      items:{type:"string"}
+    },
+
+    story_uses:{
+      type:"array",
+      items:{type:"string"}
+    },
+
+    warnings:{
+      type:"array",
+      items:{type:"string"}
+    }
+  },
+
+  required:[
+    "summary",
+    "facts",
+    "story_uses",
+    "warnings"
+  ]
+};
+
+const memorySchema = {
+
+  type:"object",
+
+  properties:{
+    memory:{type:"string"},
+    characters:{type:"string"},
+    unresolved_threads:{type:"string"},
+    next_direction:{type:"string"}
+  },
+
+  required:[
+    "memory",
+    "characters",
+    "unresolved_threads",
+    "next_direction"
+  ]
+};
+
+const directorSchema = {
+
+  type:"object",
+
+  properties:{
+    scenes:{
+      type:"array",
+      items:{
+        type:"object",
+        properties:{
+          scene_id:{type:"integer"},
+          purpose:{type:"string"},
+          action:{type:"string"},
+          camera:{type:"string"},
+          emotion:{type:"string"},
+          transition:{type:"string"}
+        },
+        required:[
+          "scene_id",
+          "purpose",
+          "action",
+          "camera",
+          "emotion",
+          "transition"
+        ]
+      }
+    }
+  },
+
+  required:["scenes"]
+};
+
+/* =========================================================
+   PROMPT BUILDER
+========================================================= */
+
+function bible(){
+
+  return {
+    title:$("storyTitle").value.trim(),
+    mc:$("mcSpecs").value.trim(),
+    world:$("worldRules").value.trim(),
+    style:$("styleAnchor").value.trim(),
+    memory:$("continuityBuffer").value.trim()
+  };
+}
+
+function buildStoryPrompt(){
+
+  const b = bible();
+
+  const batch =
+    Math.max(1,parseInt($("currentBatch").value));
+
+  const count =
+    Math.max(1,parseInt($("scenesPerBatch").value));
+
+  const start =
+    ((batch-1)*count)+1;
+
+  const end =
+    start+count-1;
+
+  return `
+You are the lead Korean manhwa adaptation writer and YouTube
+recap writer working inside a professional production office.
+
+PROJECT
+Title: ${b.title}
+
+MAIN CHARACTER
+${b.mc}
+
+WORLD RULES
+${b.world}
+
+VISUAL STYLE
+${b.style}
+
+CURRENT STORY MEMORY
+${b.memory}
+
+BATCH
+Batch ${batch}
+Scene IDs ${start} through ${end}
+
+TASK
+
+Create exactly ${count} sequential scenes.
+
+For every scene provide:
+
+1. narration
+2. image_prompt
+
+NARRATION RULES
+
+- Hindi/Hinglish.
+- Natural YouTube recap language.
+- 10 to 18 words per scene.
+- Fast pacing.
+- No headings inside narration.
+- Do not repeat the scene ID.
+- Avoid robotic wording.
+- Keep cause and effect clear.
+- Maintain continuity.
+
+IMAGE PROMPT RULES
+
+- 16:9 widescreen.
+- Cinematic Korean manhwa/webtoon look.
+- Sharp line art.
+- Detailed environment.
+- Character identity must remain consistent.
+- Describe camera angle.
+- Describe lighting.
+- Describe character pose/action.
+- Describe mood.
+- Never put dialogue text inside the image.
+- Never use vague prompts.
+
+CONTINUITY
+
+Do not contradict existing story memory.
+
+At the end create a compact next_scene_buffer
+that another AI writer can use to continue the story.
+
+Return ONLY the requested JSON structure.
+`;
+}
+
+/* =========================================================
+   STORY GENERATION
+========================================================= */
+
+async function runStory(){
+
+  setAgent("writer","WORKING");
+  setAgent("director","WORKING");
+
+  setFloorStatus("WRITER + DIRECTOR ACTIVE");
+  animatePacket(true);
+
+  const batch =
+    parseInt($("currentBatch").value);
+
+  const total =
+    parseInt($("targetBatches").value);
+
+  const count =
+    parseInt($("scenesPerBatch").value);
+
+  const start =
+    ((batch-1)*count)+1;
+
+  log(
+    `Starting Story Forge — batch ${batch}/${total}.`,
+    "ok"
+  );
+
+  $("runtimeStatus").textContent =
+    `Generating scenes ${start}-${start+count-1}...`;
+
+  const result =
+    await geminiRequest(
+      buildStoryPrompt(),
+      sceneSchema
+    );
+
+  if(
+    !result.scenes ||
+    !Array.isArray(result.scenes)
+  ){
+    throw new Error("Invalid scene response.");
   }
-</script>
-</body>
+
+  lastJSON = result;
+
+  let narration = "";
+  let prompts = "";
+
+  result.scenes.forEach(scene => {
+
+    narration +=
+      `[${scene.id}] ${scene.narration}\n\n`;
+
+    prompts +=
+      `[SCENE ${scene.id}]\n${scene.image_prompt}\n\n`;
+  });
+
+  $("narrationOutput").value += narration;
+  $("promptsOutput").value += prompts;
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  if(result.next_scene_buffer){
+    $("continuityBuffer").value =
+      result.next_scene_buffer;
+
+    $("memoryView").textContent =
+      result.next_scene_buffer;
+  }
+
+  $("currentBatch").value = batch+1;
+
+  updateStats();
+
+  saveWorkspace();
+
+  log(
+    `Batch ${batch} completed — ${result.scenes.length} scenes.`,
+    "ok"
+  );
+
+  $("runtimeStatus").textContent =
+    `Batch ${batch} complete.`;
+
+  setAgent("writer","IDLE");
+  setAgent("director","IDLE");
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+}
+
+/* =========================================================
+   RESEARCH
+========================================================= */
+
+async function runResearch(){
+
+  setAgent("research","WORKING");
+  setFloorStatus("RESEARCH LAB ACTIVE");
+  animatePacket(true);
+
+  log("Research Lab started.","ok");
+
+  const b = bible();
+
+  const prompt = `
+You are a research assistant for a manhwa YouTube production studio.
+
+PROJECT:
+${b.title}
+
+WORLD:
+${b.world}
+
+CURRENT MEMORY:
+${b.memory}
+
+Produce useful research/context for the story.
+
+Separate:
+- summary
+- useful facts
+- how each fact can improve the story
+- warnings about uncertain information
+
+Do not invent claims and present them as verified facts.
+
+Return JSON only.
+`;
+
+  const result =
+    await geminiRequest(
+      prompt,
+      researchSchema
+    );
+
+  lastJSON = result;
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  $("narrationOutput").value +=
+    `\n\n===== RESEARCH =====\n${result.summary}\n\n` +
+    result.facts.map(x=>"• "+x).join("\n");
+
+  saveWorkspace();
+
+  setAgent("research","IDLE");
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+
+  log("Research completed.","ok");
+}
+
+/* =========================================================
+   SCRIPT
+========================================================= */
+
+async function runScript(){
+
+  setAgent("writer","WORKING");
+  setAgent("voice","WORKING");
+
+  setFloorStatus("SCRIPT WRITER ACTIVE");
+  animatePacket(true);
+
+  const source =
+    $("narrationOutput").value.trim();
+
+  if(!source){
+    throw new Error(
+      "No story/narration available."
+    );
+  }
+
+  const prompt = `
+You are a professional Hindi/Hinglish YouTube manhwa narrator.
+
+Rewrite the following raw material into a clean,
+high-retention narration.
+
+RULES:
+- Natural Hinglish.
+- Conversational.
+- Strong hooks.
+- No fake facts.
+- No excessive English.
+- Keep the story order.
+- Short paragraphs.
+- Suitable for voiceover.
+- Do not include production notes.
+
+RAW MATERIAL:
+${source.slice(-30000)}
+
+Return JSON only:
+
+{
+  "script":"..."
+}
+`;
+
+  const schema = {
+    type:"object",
+    properties:{
+      script:{type:"string"}
+    },
+    required:["script"]
+  };
+
+  const result =
+    await geminiRequest(prompt,schema);
+
+  lastJSON = result;
+
+  $("narrationOutput").value =
+    result.script;
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  saveWorkspace();
+
+  setAgent("writer","IDLE");
+  setAgent("voice","IDLE");
+
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+
+  log("Narration script optimized.","ok");
+}
+
+/* =========================================================
+   VISUAL
+========================================================= */
+
+async function runVisual(){
+
+  setAgent("director","WORKING");
+  setAgent("voice","WORKING");
+
+  setFloorStatus("VISUAL FORGE ACTIVE");
+  animatePacket(true);
+
+  const source =
+    $("narrationOutput").value.trim();
+
+  if(!source){
+    throw new Error("No narration available.");
+  }
+
+  const prompt = `
+You are the visual director of a Korean manhwa
+YouTube production pipeline.
+
+Create image prompts for each numbered narration scene.
+
+STYLE:
+${$("styleAnchor").value}
+
+CHARACTER:
+${$("mcSpecs").value}
+
+WORLD:
+${$("worldRules").value}
+
+NARRATION:
+${source.slice(-40000)}
+
+For each scene create a highly specific 16:9
+image-generation prompt.
+
+Include:
+- subject
+- pose
+- environment
+- camera
+- composition
+- lighting
+- atmosphere
+- continuity details
+- cinematic manhwa rendering
+
+No text inside image.
+
+Return JSON only.
+`;
+
+  const schema = {
+    type:"object",
+    properties:{
+      prompts:{
+        type:"array",
+        items:{
+          type:"object",
+          properties:{
+            scene_id:{type:"integer"},
+            image_prompt:{type:"string"}
+          },
+          required:[
+            "scene_id",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    required:["prompts"]
+  };
+
+  const result =
+    await geminiRequest(prompt,schema);
+
+  lastJSON = result;
+
+  $("promptsOutput").value =
+    result.prompts
+      .map(x=>`[SCENE ${x.scene_id}]\n${x.image_prompt}`)
+      .join("\n\n");
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  saveWorkspace();
+
+  setAgent("director","IDLE");
+  setAgent("voice","IDLE");
+
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+
+  switchOutput("prompts");
+
+  log(
+    `Visual Forge generated ${result.prompts.length} prompts.`,
+    "ok"
+  );
+}
+
+/* =========================================================
+   CONTINUITY
+========================================================= */
+
+async function runContinuity(){
+
+  setAgent("writer","WORKING");
+  setAgent("director","WORKING");
+
+  setFloorStatus("MEMORY ENGINE ACTIVE");
+  animatePacket(true);
+
+  const source =
+    $("narrationOutput").value.trim();
+
+  const prompt = `
+You are the continuity editor for a long-running manhwa
+adaptation.
+
+CURRENT MEMORY:
+${$("continuityBuffer").value}
+
+RECENT STORY:
+${source.slice(-35000)}
+
+Create compact long-term story memory.
+
+Track:
+- important events
+- character state
+- powers
+- relationships
+- locations
+- unresolved threads
+- next logical direction
+
+Avoid unnecessary prose.
+
+Return JSON only.
+`;
+
+  const result =
+    await geminiRequest(
+      prompt,
+      memorySchema
+    );
+
+  lastJSON = result;
+
+  const memory =
+`STORY MEMORY
+${result.memory}
+
+CHARACTERS
+${result.characters}
+
+UNRESOLVED THREADS
+${result.unresolved_threads}
+
+NEXT DIRECTION
+${result.next_direction}`;
+
+  $("continuityBuffer").value = memory;
+  $("memoryView").textContent = memory;
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  saveWorkspace();
+
+  setAgent("writer","IDLE");
+  setAgent("director","IDLE");
+
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+
+  log("Continuity memory compressed.","ok");
+}
+
+/* =========================================================
+   DIRECTOR
+========================================================= */
+
+async function runDirector(){
+
+  setAgent("director","WORKING");
+
+  setFloorStatus("DIRECTOR ACTIVE");
+  animatePacket(true);
+
+  const source =
+    $("narrationOutput").value.trim();
+
+  const prompt = `
+You are a cinematic manhwa director.
+
+Project:
+${$("storyTitle").value}
+
+Character:
+${$("mcSpecs").value}
+
+Narration:
+${source.slice(-30000)}
+
+For each numbered scene plan:
+- purpose
+- action
+- camera
+- emotion
+- transition
+
+Make the visual sequence cinematic and coherent.
+
+Return JSON only.
+`;
+
+  const result =
+    await geminiRequest(
+      prompt,
+      directorSchema
+    );
+
+  lastJSON = result;
+
+  $("jsonOutput").value =
+    JSON.stringify(result,null,2);
+
+  let output = "";
+
+  result.scenes.forEach(scene=>{
+    output +=
+`SCENE ${scene.scene_id}
+PURPOSE: ${scene.purpose}
+ACTION: ${scene.action}
+CAMERA: ${scene.camera}
+EMOTION: ${scene.emotion}
+TRANSITION: ${scene.transition}
+
+`;
+  });
+
+  $("promptsOutput").value = output;
+
+  saveWorkspace();
+
+  setAgent("director","IDLE");
+  animatePacket(false);
+  setFloorStatus("ALL AGENTS IDLE");
+
+  switchOutput("prompts");
+
+  log("Director finished scene planning.","ok");
+}
+
+/* =========================================================
+   WORKFLOW ROUTER
+========================================================= */
+
+async function runSelectedWorkflow(){
+
+  if(isRunning) return;
+
+  isRunning = true;
+
+  $("statStatus").textContent = "RUNNING";
+
+  try{
+
+    switch(selectedWorkflow){
+
+      case "story":
+        await runStory();
+        break;
+
+      case "research":
+        await runResearch();
+        break;
+
+      case "script":
+        await runScript();
+        break;
+
+      case "visual":
+        await runVisual();
+        break;
+
+      case "continuity":
+        await runContinuity();
+        break;
+
+      case "director":
+        await runDirector();
+        break;
+
+      default:
+        throw new Error("Unknown workflow.");
+    }
+
+    toast("Workflow completed.");
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    Object.keys(agents)
+      .forEach(x=>setAgent(x,"ERROR"));
+
+    animatePacket(false);
+    setFloorStatus("AGENT ERROR");
+
+    $("runtimeStatus").textContent =
+      "ERROR: " + error.message;
+
+    log(
+      "Workflow failed: " + error.message,
+      "err"
+    );
+
+    toast("Workflow failed.");
+
+  }
+  finally{
+
+    isRunning = false;
+
+    setTimeout(()=>{
+      Object.keys(agents)
+        .forEach(x=>setAgent(x,"IDLE"));
+
+      setFloorStatus("ALL AGENTS IDLE");
+
+      $("statStatus").textContent = "IDLE";
+
+    },2500);
+  }
+}
+
+function stopGeneration(){
+
+  isRunning = false;
+
+  animatePacket(false);
+
+  Object.keys(agents)
+    .forEach(x=>setAgent(x,"IDLE"));
+
+  setFloorStatus("STOPPED");
+
+  $("statStatus").textContent = "STOPPED";
+
+  $("runtimeStatus").textContent =
+    "Generation stopped by user.";
+
+  log("Generation stopped by user.","warn");
+}
+
+/* =========================================================
+   TEST API
+========================================================= */
+
+async function testGemini(){
+
+  try{
+
+    $("runtimeStatus").textContent =
+      "Testing Gemini connection...";
+
+    log("Testing Gemini API...");
+
+    const schema = {
+      type:"object",
+      properties:{
+        ok:{type:"boolean"},
+        message:{type:"string"}
+      },
+      required:["ok","message"]
+    };
+
+    const result =
+      await geminiRequest(
+        `Reply with {"ok":true,"message":"MANHWA HQ ONLINE"}.`,
+        schema
+      );
+
+    updateConnection(true);
+
+    log(
+      "Gemini connection successful.",
+      "ok"
+    );
+
+    $("runtimeStatus").textContent =
+      result.message || "Gemini online.";
+
+    toast("Gemini API working.");
+
+  }
+  catch(error){
+
+    updateConnection(false);
+
+    log(
+      "Gemini test failed: "+error.message,
+      "err"
+    );
+
+    $("runtimeStatus").textContent =
+      error.message;
+
+    toast("Gemini connection failed.");
+  }
+}
+
+/* =========================================================
+   OUTPUT TABS
+========================================================= */
+
+function switchOutput(type){
+
+  $("narrationOutput").style.display =
+    type==="narration" ? "block":"none";
+
+  $("promptsOutput").style.display =
+    type==="prompts" ? "block":"none";
+
+  $("jsonOutput").style.display =
+    type==="json" ? "block":"none";
+
+  $("tabNarration").classList.toggle(
+    "active",
+    type==="narration"
+  );
+
+  $("tabPrompts").classList.toggle(
+    "active",
+    type==="prompts"
+  );
+
+  $("tabJSON").classList.toggle(
+    "active",
+    type==="json"
+  );
+}
+
+/* =========================================================
+   COPY / DOWNLOAD
+========================================================= */
+
+async function copyOutput(){
+
+  let text = "";
+
+  if($("narrationOutput").style.display !== "none"){
+    text = $("narrationOutput").value;
+  }
+  else if($("promptsOutput").style.display !== "none"){
+    text = $("promptsOutput").value;
+  }
+  else{
+    text = $("jsonOutput").value;
+  }
+
+  if(!text){
+    toast("Nothing to copy.");
+    return;
+  }
+
+  await navigator.clipboard.writeText(text);
+
+  toast("Copied.");
+}
+
+function downloadFile(name,text,type="text/plain"){
+
+  if(!text){
+    toast("Nothing to download.");
+    return;
+  }
+
+  const blob =
+    new Blob([text],{type});
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+  a.download = name;
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>{
+    URL.revokeObjectURL(url);
+  },1000);
+}
+
+function downloadNarration(){
+  downloadFile(
+    "manhwa_narration.txt",
+    $("narrationOutput").value
+  );
+}
+
+function downloadPrompts(){
+  downloadFile(
+    "google_flow_prompts.txt",
+    $("promptsOutput").value
+  );
+}
+
+function downloadJSON(){
+  downloadFile(
+    "manhwa_project.json",
+    $("jsonOutput").value,
+    "application/json"
+  );
+}
+
+/* =========================================================
+   PROJECT SAVE
+========================================================= */
+
+function getProject(){
+
+  return {
+
+    version:3,
+
+    workflow:selectedWorkflow,
+
+    storyTitle:$("storyTitle").value,
+
+    mcSpecs:$("mcSpecs").value,
+
+    worldRules:$("worldRules").value,
+
+    styleAnchor:$("styleAnchor").value,
+
+    currentBatch:$("currentBatch").value,
+
+    targetBatches:$("targetBatches").value,
+
+    scenesPerBatch:$("scenesPerBatch").value,
+
+    thinkingLevel:$("thinkingLevel").value,
+
+    model:$("modelSelect").value,
+
+    continuityBuffer:$("continuityBuffer").value,
+
+    narration:$("narrationOutput").value,
+
+    prompts:$("promptsOutput").value,
+
+    raw:$("jsonOutput").value,
+
+    memory:$("memoryView").textContent,
+
+    savedAt:new Date().toISOString()
+  };
+}
+
+function saveWorkspace(){
+
+  localStorage.setItem(
+    STORAGE.project,
+    JSON.stringify(getProject())
+  );
+
+  localStorage.setItem(
+    STORAGE.narration,
+    $("narrationOutput").value
+  );
+
+  localStorage.setItem(
+    STORAGE.prompts,
+    $("promptsOutput").value
+  );
+
+  localStorage.setItem(
+    STORAGE.raw,
+    $("jsonOutput").value
+  );
+
+  localStorage.setItem(
+    STORAGE.memory,
+    $("memoryView").textContent
+  );
+
+  updateStats();
+}
+
+function saveProject(){
+
+  saveWorkspace();
+
+  toast("Project saved locally.");
+
+  log("Project checkpoint saved.","ok");
+}
+
+function loadProject(){
+
+  const raw =
+    localStorage.getItem(STORAGE.project);
+
+  if(!raw){
+    toast("No saved project.");
+    return;
+  }
+
+  try{
+
+    const p = JSON.parse(raw);
+
+    $("storyTitle").value = p.storyTitle || "";
+    $("mcSpecs").value = p.mcSpecs || "";
+    $("worldRules").value = p.worldRules || "";
+    $("styleAnchor").value = p.styleAnchor || "";
+
+    $("currentBatch").value =
+      p.currentBatch || 1;
+
+    $("targetBatches").value =
+      p.targetBatches || 12;
+
+    $("scenesPerBatch").value =
+      p.scenesPerBatch || 50;
+
+    $("thinkingLevel").value =
+      p.thinkingLevel || "medium";
+
+    $("modelSelect").value =
+      p.model || "gemini-3.7-flash";
+
+    $("continuityBuffer").value =
+      p.continuityBuffer || "";
+
+    $("narrationOutput").value =
+      p.narration || "";
+
+    $("promptsOutput").value =
+      p.prompts || "";
+
+    $("jsonOutput").value =
+      p.raw || "";
+
+    $("memoryView").textContent =
+      p.memory || "No memory.";
+
+    selectedWorkflow =
+      p.workflow || "story";
+
+    document
+      .querySelectorAll(".workflow")
+      .forEach(button=>{
+        button.classList.toggle(
+          "active",
+          button.dataset.workflow === selectedWorkflow
+        );
+      });
+
+    updateStats();
+
+    toast("Project loaded.");
+
+    log("Project restored from local storage.","ok");
+
+  }
+  catch(e){
+
+    toast("Project file is corrupted.");
+    log(
+      "Project restore failed.",
+      "err"
+    );
+  }
+}
+
+/* =========================================================
+   EXPORT / IMPORT
+========================================================= */
+
+function exportProject(){
+
+  const project =
+    getProject();
+
+  downloadFile(
+    "manhwa_hq_project.json",
+    JSON.stringify(project,null,2),
+    "application/json"
+  );
+
+  log("Project exported.","ok");
+}
+
+function importProject(){
+
+  const input =
+    document.createElement("input");
+
+  input.type = "file";
+  input.accept = ".json,application/json";
+
+  input.onchange = async event=>{
+
+    const file =
+      event.target.files[0];
+
+    if(!file) return;
+
+    try{
+
+      const text =
+        await file.text();
+
+      const project =
+        JSON.parse(text);
+
+      localStorage.setItem(
+        STORAGE.project,
+        JSON.stringify(project)
+      );
+
+      loadProject();
+
+      toast("Project imported.");
+
+    }
+    catch(e){
+
+      toast("Invalid project JSON.");
+
+      log(
+        "Project import failed.",
+        "err"
+      );
+    }
+  };
+
+  input.click();
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function clearOutputs(){
+
+  if(
+    !confirm(
+      "Clear narration, prompts and raw JSON?"
+    )
+  ) return;
+
+  $("narrationOutput").value = "";
+  $("promptsOutput").value = "";
+  $("jsonOutput").value = "";
+
+  saveWorkspace();
+
+  updateStats();
+
+  toast("Outputs cleared.");
+}
+
+function resetProject(){
+
+  if(
+    !confirm(
+      "Reset the entire Manhwa HQ project?"
+    )
+  ) return;
+
+  Object.values(STORAGE)
+    .filter(k => k !== STORAGE.key)
+    .forEach(k => localStorage.removeItem(k));
+
+  location.reload();
+}
+
+/* =========================================================
+   LOG STORAGE
+========================================================= */
+
+function saveLogs(){
+
+  const items =
+    [...$("activityLog").children]
+      .map(x=>x.outerHTML);
+
+  localStorage.setItem(
+    STORAGE.logs,
+    JSON.stringify(items)
+  );
+}
+
+function loadLogs(){
+
+  const raw =
+    localStorage.getItem(STORAGE.logs);
+
+  if(!raw) return;
+
+  try{
+
+    const items =
+      JSON.parse(raw);
+
+    $("activityLog").innerHTML =
+      items.join("");
+
+  }
+  catch(e){}
+}
+
+function clearLogs(){
+
+  $("activityLog").innerHTML = "";
+
+  saveLogs();
+
+  log("Activity log cleared.","ok");
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+  const narration =
+    $("narrationOutput").value;
+
+  const scenes =
+    (narration.match(/\d+/g) || []).length;
+
+  const words =
+    narration
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .length;
+
+  const batch =
+    Math.max(
+      0,
+      parseInt($("currentBatch").value || 1)-1
+    );
+
+  $("statScenes").textContent =
+    scenes;
+
+  $("statWords").textContent =
+    words;
+
+  $("statBatches").textContent =
+    batch;
+
+  const total =
+    parseInt($("targetBatches").value || 12);
+
+  const pct =
+    Math.min(
+      100,
+      Math.max(
+        0,
+        (batch/total)*100
+      )
+    );
+
+  $("progressFill").style.width =
+    pct+"%";
+
+  $("progressText").textContent =
+    Math.round(pct)+"%";
+
+  $("batchText").textContent =
+    `Batch ${Math.min(batch+1,total)} / ${total}`;
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+
+function init(){
+
+  loadLogs();
+
+  const key =
+    localStorage.getItem(STORAGE.key);
+
+  updateConnection(!!key);
+
+  if(localStorage.getItem(STORAGE.project)){
+    loadProject();
+  }
+  else{
+
+    $("narrationOutput").value =
+      localStorage.getItem(STORAGE.narration) || "";
+
+    $("promptsOutput").value =
+      localStorage.getItem(STORAGE.prompts) || "";
+
+    $("jsonOutput").value =
+      localStorage.getItem(STORAGE.raw) || "";
+
+    $("memoryView").textContent =
+      localStorage.getItem(STORAGE.memory) ||
+      "No story memory generated yet.";
+  }
+
+  $("targetBatches")
+    .addEventListener("input",updateStats);
+
+  $("currentBatch")
+    .addEventListener("input",updateStats);
+
+  $("scenesPerBatch")
+    .addEventListener("change",updateStats);
+
+  setInterval(saveWorkspace,15000);
+
+  updateStats();
+
+  log(
+    "MANHWA HQ initialized.",
+    "ok"
+  );
+}
+
+init();
+
+</script></body>
 </html>
