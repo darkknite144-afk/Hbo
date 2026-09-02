@@ -428,9 +428,11 @@ select:focus{
 
     text-align:center;
 
+    perspective:700px;
+
     transition:
-        left .7s ease,
-        top .7s ease,
+        left .7s cubic-bezier(.34,1.15,.64,1),
+        top .7s cubic-bezier(.34,1.15,.64,1),
         transform .3s ease;
 
     z-index:4;
@@ -447,7 +449,13 @@ select:focus{
     box-shadow:
         4px 4px 0 var(--brown);
 
-    background:var(--yellow);
+    background:
+        radial-gradient(
+            circle at 32% 26%,
+            #fff6cf 0%,
+            var(--yellow) 55%,
+            var(--yellow2) 100%
+        );
 
     position:relative;
 
@@ -458,20 +466,80 @@ select:focus{
 
     font-size:34px;
 
+    transform-style:preserve-3d;
+
     animation:
-        chibiIdle 2s ease-in-out infinite;
+        chibiIdle 2.6s cubic-bezier(.45,0,.55,1) infinite;
+
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        box-shadow .35s ease;
+}
+
+.agent:hover .agent-avatar{
+    transform:
+        translateY(-6px)
+        rotateY(14deg)
+        rotateX(6deg)
+        scale(1.08);
+
+    box-shadow:
+        9px 11px 0 rgba(52,39,25,.35),
+        4px 4px 0 var(--brown);
 }
 
 @keyframes chibiIdle{
 
     0%,100%{
-        transform:translateY(0);
+        transform:
+            translateY(0)
+            rotateZ(-1.5deg);
     }
 
     50%{
-        transform:translateY(-5px);
+        transform:
+            translateY(-6px)
+            rotateZ(1.5deg);
     }
 
+}
+
+@keyframes agentPulseIn{
+
+    0%{
+        transform:scale(.85) translateY(0);
+    }
+
+    45%{
+        transform:scale(1.18) translateY(-12px) rotateZ(-4deg);
+    }
+
+    100%{
+        transform:scale(1) translateY(0) rotateZ(0);
+    }
+
+}
+
+.agent.pulseIn .agent-avatar{
+    animation:
+        agentPulseIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+
+.agent-avatar::before{
+    content:"";
+
+    position:absolute;
+
+    inset:2px;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(255,255,255,.55) 0%,
+            rgba(255,255,255,0) 45%
+        );
+
+    pointer-events:none;
 }
 
 .agent-avatar::after{
@@ -491,6 +559,23 @@ select:focus{
 
     box-shadow:
         inset 0 0 0 2px var(--green);
+
+    animation:
+        blinkStatus 2.6s ease-in-out infinite;
+}
+
+@keyframes blinkStatus{
+
+    0%,92%,100%{
+        box-shadow:
+            inset 0 0 0 2px var(--green);
+    }
+
+    96%{
+        box-shadow:
+            inset 0 0 0 2px #dff3df;
+    }
+
 }
 
 .agent-name{
@@ -544,9 +629,12 @@ select:focus{
     top:-27px;
     left:50%;
 
-    transform:translateX(-50%);
+    transform:translateX(-50%) scale(.55);
+    transform-origin:bottom center;
 
-    display:none;
+    opacity:0;
+
+    pointer-events:none;
 
     background:white;
 
@@ -563,10 +651,15 @@ select:focus{
     white-space:nowrap;
 
     box-shadow:var(--shadow-small);
+
+    transition:
+        opacity .25s ease,
+        transform .35s cubic-bezier(.34,1.56,.64,1);
 }
 
 .agent.thinking .thinking{
-    display:block;
+    opacity:1;
+    transform:translateX(-50%) scale(1);
 }
 
 .thinking::after{
@@ -650,27 +743,35 @@ select:focus{
     display:block;
 
     animation:
-        flyMail 1.2s ease-in-out forwards;
+        flyMail 1.35s cubic-bezier(.37,0,.63,1) forwards;
 }
 
 @keyframes flyMail{
 
     0%{
         left:15%;
-        top:25%;
-        transform:rotate(-10deg);
+        top:55%;
+        transform:rotate(-14deg) scale(.85);
+    }
+
+    30%{
+        transform:rotate(8deg) scale(1.05);
     }
 
     50%{
         left:50%;
-        top:50%;
-        transform:rotate(15deg) scale(1.15);
+        top:20%;
+        transform:rotate(18deg) scale(1.2);
+    }
+
+    70%{
+        transform:rotate(2deg) scale(1.05);
     }
 
     100%{
         left:80%;
-        top:30%;
-        transform:rotate(-10deg);
+        top:45%;
+        transform:rotate(-10deg) scale(.9);
     }
 
 }
@@ -797,7 +898,10 @@ select:focus{
 
     background:#fffdf5;
 
-    transition:.2s;
+    transition:
+        transform .3s cubic-bezier(.34,1.56,.64,1),
+        background .3s ease,
+        box-shadow .3s ease;
 }
 
 .workflow-step.active{
@@ -884,7 +988,7 @@ select:focus{
         );
 
     transition:
-        width .4s ease;
+        width .6s cubic-bezier(.65,0,.35,1);
 }
 
 /* =========================
@@ -972,6 +1076,101 @@ select:focus{
 }
 
 .dna-row strong{
+    font-size:9px;
+}
+
+/* =========================
+   STYLE PICKER
+========================= */
+
+.style-chip-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:7px;
+}
+
+.style-chip{
+    border:2px solid var(--brown);
+
+    background:#fffdf5;
+
+    padding:8px 7px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    text-align:left;
+
+    line-height:1.3;
+
+    transition:
+        transform .2s cubic-bezier(.34,1.56,.64,1),
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.style-chip span{
+    display:block;
+
+    font-size:15px;
+
+    margin-bottom:2px;
+}
+
+.style-chip:hover{
+    transform:translateY(-2px);
+
+    box-shadow:2px 3px 0 var(--brown);
+}
+
+.style-chip.active{
+    background:var(--yellow);
+
+    box-shadow:3px 3px 0 var(--brown);
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   CHARACTER ROSTER
+========================= */
+
+.char-roster{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-bottom:10px;
+}
+
+.char-tag{
+    display:inline-block;
+
+    border:2px solid var(--brown);
+
+    background:#fff2c2;
+
+    padding:4px 8px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    box-shadow:2px 2px 0 var(--brown);
+}
+
+.char-tag small{
+    display:block;
+
+    font-weight:600;
+
+    color:var(--brown2);
+
     font-size:9px;
 }
 
@@ -1359,12 +1558,98 @@ select:focus{
         <div class="field">
 
             <label>
+                Supporting Characters (optional)
+            </label>
+
+            <textarea
+                id="supportingCharacters"
+                rows="3"
+                placeholder="e.g. Rehan, a wary older survivor who becomes a mentor; a pair of siblings hiding in a bunker; a rival scavenger who can't fully be trusted. Leave blank and the Director will invent a cast."
+            ></textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
                 World / Environment
             </label>
 
             <textarea id="world">
 A remote mountainous wilderness after a mysterious global disaster. Dense forest, abandoned structures, rivers, caves, changing weather and scarce resources.
             </textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Visual Style
+            </label>
+
+            <div
+                class="style-chip-grid"
+                id="styleChipGrid"
+            >
+
+                <button type="button" class="style-chip active" data-style="cinematic" onclick="selectStyle('cinematic')">
+                    <span>🎬</span>
+                    Cinematic Realistic
+                </button>
+
+                <button type="button" class="style-chip" data-style="chibi3d" onclick="selectStyle('chibi3d')">
+                    <span>🧸</span>
+                    Chibi 3D
+                </button>
+
+                <button type="button" class="style-chip" data-style="webtoon" onclick="selectStyle('webtoon')">
+                    <span>📱</span>
+                    Webtoon / Comic
+                </button>
+
+                <button type="button" class="style-chip" data-style="anime" onclick="selectStyle('anime')">
+                    <span>🌸</span>
+                    Anime Style
+                </button>
+
+                <button type="button" class="style-chip" data-style="watercolor" onclick="selectStyle('watercolor')">
+                    <span>🎨</span>
+                    Watercolor Storybook
+                </button>
+
+                <button type="button" class="style-chip" data-style="darkfantasy" onclick="selectStyle('darkfantasy')">
+                    <span>🌙</span>
+                    Dark Fantasy
+                </button>
+
+                <button type="button" class="style-chip" data-style="pixelretro" onclick="selectStyle('pixelretro')">
+                    <span>👾</span>
+                    Pixel Retro
+                </button>
+
+                <button type="button" class="style-chip" data-style="custom" onclick="selectStyle('custom')">
+                    <span>✏️</span>
+                    Custom Only
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Custom Style Notes (optional, always added)
+            </label>
+
+            <textarea
+                id="customStyleNotes"
+                rows="3"
+                placeholder="e.g. Pixar-like soft 3D shading, big sparkly eyes, rounded shapes, pastel rim light..."
+            ></textarea>
 
         </div>
 
@@ -1772,14 +2057,34 @@ Story begins with the protagonist waking alone in a cold wilderness with limited
             <div class="stat">
 
                 <div class="stat-label">
-                    Style
+                    Characters
                 </div>
 
                 <div
                     class="stat-value"
+                    id="charCount"
+                >
+                    1
+                </div>
+
+            </div>
+
+
+            <div
+                class="stat"
+                style="grid-column:1/-1;"
+            >
+
+                <div class="stat-label">
+                    Visual Style
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="styleDisplay"
                     style="font-size:13px"
                 >
-                    LOCKED
+                    Cinematic Realistic
                 </div>
 
             </div>
@@ -1964,7 +2269,7 @@ Story begins with the protagonist waking alone in a cold wilderness with limited
 
             <div class="dna-row">
                 <span>Visual Identity</span>
-                <strong>Natural Cinematic</strong>
+                <strong id="dnaVisualIdentity">Cinematic Realistic</strong>
             </div>
 
             <div class="dna-row">
@@ -1980,6 +2285,11 @@ Story begins with the protagonist waking alone in a cold wilderness with limited
             <div class="dna-row">
                 <span>Character</span>
                 <strong>CONSISTENT</strong>
+            </div>
+
+            <div class="dna-row">
+                <span>Characters Tracked</span>
+                <strong id="dnaCharacterCount">1</strong>
             </div>
 
         </div>
@@ -2175,6 +2485,20 @@ Story begins with the protagonist waking alone in a cold wilderness with limited
         class="output-panel hidden"
         id="memoryPanel"
     >
+
+        <div style="margin-bottom:12px;">
+
+            <strong>Character Roster</strong>
+
+            <div style="color:var(--muted);font-size:10px;margin:4px 0 8px;">
+                Tracked automatically so supporting characters stay consistent across batches
+            </div>
+
+            <div class="char-roster" id="charRoster">
+                <span class="char-tag">No characters tracked yet<small>Starts after batch 1</small></span>
+            </div>
+
+        </div>
 
         <textarea
             id="memoryOutput"
@@ -2397,6 +2721,10 @@ const state = {
 
     logs:[],
 
+    imageStyleKey:"cinematic",
+
+    characters:[],
+
     styleDNA:{
         aspect:"16:9",
         visualIdentity:
@@ -2433,6 +2761,10 @@ window.addEventListener("load",()=>{
     loadSettings();
 
     loadProject();
+
+    selectStyle(state.imageStyleKey);
+
+    renderCharacterRoster();
 
     updateStats();
 
@@ -2566,6 +2898,203 @@ function closeSettings(){
 
 
 /* =========================================================
+   IMAGE STYLE PRESETS
+========================================================= */
+
+const IMAGE_STYLES = {
+
+    cinematic:{
+        name:"Cinematic Realistic",
+        keywords:
+            "cinematic survival illustration, natural realistic textures, photoreal-influenced concept art, believable materials and fabrics, dramatic natural lighting, filmic color grading, atmospheric depth, documentary realism"
+    },
+
+    chibi3d:{
+        name:"Chibi 3D",
+        keywords:
+            "adorable chibi 3D render, oversized head to body ratio, big glossy expressive eyes, soft rounded Pixar-like shapes, smooth clay-like skin shading, cute stylised proportions, soft rim lighting, collectible toy-figure finish, warm inviting color palette, gentle ambient occlusion, playful and heartwarming despite the survival setting"
+    },
+
+    webtoon:{
+        name:"Webtoon / Comic",
+        keywords:
+            "clean vector-influenced webtoon illustration, bold linework, flat cel shading with soft gradients, expressive character acting, dynamic panel-style composition, vivid but tasteful color blocking"
+    },
+
+    anime:{
+        name:"Anime Style",
+        keywords:
+            "modern anime illustration, expressive large eyes, clean linework, soft cel shading, dramatic anime lighting, painterly anime backgrounds, emotive character expressions"
+    },
+
+    watercolor:{
+        name:"Watercolor Storybook",
+        keywords:
+            "hand-painted watercolor storybook illustration, soft bleeding pigment textures, gentle paper grain, muted dreamy palette, delicate linework, whimsical picture-book warmth"
+    },
+
+    darkfantasy:{
+        name:"Dark Fantasy",
+        keywords:
+            "moody dark-fantasy illustration, dramatic chiaroscuro lighting, desaturated palette with selective warm highlights, painterly concept-art brushwork, ominous atmospheric fog, tense cinematic mood"
+    },
+
+    pixelretro:{
+        name:"Pixel Retro",
+        keywords:
+            "detailed retro pixel-art illustration, chunky readable pixel clusters, limited nostalgic color palette, crisp pixel edges, 16-bit adventure game aesthetic, charming low-fi lighting"
+    },
+
+    custom:{
+        name:"Custom Only",
+        keywords:
+            "follow only the creator's custom style notes for the entire visual identity, do not blend in any other preset look"
+    }
+
+};
+
+
+function selectStyle(key){
+
+    if(!IMAGE_STYLES[key])
+        key = "cinematic";
+
+    state.imageStyleKey = key;
+
+
+    document
+        .querySelectorAll(".style-chip")
+        .forEach(chip=>{
+
+            chip.classList.toggle(
+                "active",
+                chip.dataset.style === key
+            );
+
+        });
+
+
+    const styleInfo =
+        IMAGE_STYLES[key];
+
+
+    if($("dnaVisualIdentity"))
+        $("dnaVisualIdentity").innerText =
+            styleInfo.name;
+
+    if($("styleDisplay"))
+        $("styleDisplay").innerText =
+            styleInfo.name;
+
+
+    saveProject();
+
+}
+
+
+/* =========================================================
+   CHARACTER ROSTER
+========================================================= */
+
+function mergeCharacters(newList){
+
+    if(!Array.isArray(newList))
+        return;
+
+
+    newList.forEach(c=>{
+
+        if(!c || !c.name)
+            return;
+
+
+        const name =
+            String(c.name).trim();
+
+        if(!name)
+            return;
+
+
+        const existing =
+            state.characters.find(
+                x =>
+                    x.name.toLowerCase() ===
+                    name.toLowerCase()
+            );
+
+
+        if(existing){
+
+            if(c.role)
+                existing.role = c.role;
+
+            if(c.appearance)
+                existing.appearance = c.appearance;
+
+        }else{
+
+            state.characters.push({
+                name,
+                role:
+                    c.role || "supporting character",
+                appearance:
+                    c.appearance || ""
+            });
+
+        }
+
+    });
+
+
+    renderCharacterRoster();
+
+}
+
+
+function renderCharacterRoster(){
+
+    const box =
+        $("charRoster");
+
+    if(!box)
+        return;
+
+
+    if(!state.characters.length){
+
+        box.innerHTML =
+            `<span class="char-tag">No characters tracked yet<small>Starts after batch 1</small></span>`;
+
+    }else{
+
+        box.innerHTML =
+            state.characters
+                .map(
+                    c =>
+                        `<span class="char-tag">${escapeHtml(c.name)}<small>${escapeHtml(c.role)}</small></span>`
+                )
+                .join("");
+
+    }
+
+
+    const total =
+        Math.max(
+            1,
+            state.characters.length + 1
+        );
+
+
+    if($("charCount"))
+        $("charCount").innerText = total;
+
+    if($("dnaCharacterCount"))
+        $("dnaCharacterCount").innerText = total;
+
+}
+
+
+/* =========================================================
    PROJECT SAVE
 ========================================================= */
 
@@ -2582,8 +3111,14 @@ function saveProject(){
         character:
             $("character").value,
 
+        supportingCharacters:
+            $("supportingCharacters").value,
+
         world:
             $("world").value,
+
+        customStyleNotes:
+            $("customStyleNotes").value,
 
         storyGoal:
             $("storyGoal").value,
@@ -2610,7 +3145,13 @@ function saveProject(){
             state.prompts,
 
         scenes:
-            state.scenes
+            state.scenes,
+
+        imageStyleKey:
+            state.imageStyleKey,
+
+        characters:
+            state.characters
 
     };
 
@@ -2665,6 +3206,14 @@ function loadProject(){
 
         state.scenes =
             p.scenes || 0;
+
+        state.imageStyleKey =
+            p.imageStyleKey || "cinematic";
+
+        state.characters =
+            Array.isArray(p.characters)
+            ? p.characters
+            : [];
 
 
         $("scriptOutput").value =
@@ -2850,6 +3399,24 @@ function agentThink(agentId,active=true){
         el.classList.add(
             "thinking"
         );
+
+        el.classList.remove(
+            "pulseIn"
+        );
+
+        void el.offsetWidth;
+
+        el.classList.add(
+            "pulseIn"
+        );
+
+        setTimeout(()=>{
+
+            el.classList.remove(
+                "pulseIn"
+            );
+
+        },500);
 
     }else{
 
@@ -3108,6 +3675,22 @@ const storySchema = {
 
                     scene_function:{
                         type:"string"
+                    },
+
+                    camera_angle:{
+                        type:"string"
+                    },
+
+                    lighting_mood:{
+                        type:"string"
+                    },
+
+                    characters_present:{
+                        type:"array",
+
+                        items:{
+                            type:"string"
+                        }
                     }
 
                 },
@@ -3115,7 +3698,41 @@ const storySchema = {
                 required:[
                     "narration",
                     "visual_brief",
-                    "scene_function"
+                    "scene_function",
+                    "camera_angle",
+                    "lighting_mood",
+                    "characters_present"
+                ]
+            }
+        },
+
+        new_characters:{
+            type:"array",
+
+            items:{
+
+                type:"object",
+
+                properties:{
+
+                    name:{
+                        type:"string"
+                    },
+
+                    role:{
+                        type:"string"
+                    },
+
+                    appearance:{
+                        type:"string"
+                    }
+
+                },
+
+                required:[
+                    "name",
+                    "role",
+                    "appearance"
                 ]
             }
         },
@@ -3128,6 +3745,7 @@ const storySchema = {
 
     required:[
         "scenes",
+        "new_characters",
         "next_memory"
     ]
 
@@ -3178,6 +3796,9 @@ function buildStoryPrompt(){
     const character =
         $("character").value;
 
+    const supportingCharacters =
+        $("supportingCharacters").value.trim();
+
     const world =
         $("world").value;
 
@@ -3190,6 +3811,11 @@ function buildStoryPrompt(){
     const batch =
         Number(
             $("batchNo").value
+        );
+
+    const totalBatches =
+        Number(
+            $("totalBatches").value
         );
 
     const scenes =
@@ -3213,11 +3839,40 @@ function buildStoryPrompt(){
             "natural conversational English";
 
 
+    const isFirstBatch =
+        batch <= 1;
+
+    const isFinalBatch =
+        batch >= totalBatches;
+
+
+    const rosterBlock =
+        state.characters.length
+        ? state.characters
+            .map(
+                c =>
+                    `- ${c.name} (${c.role}): ${c.appearance}`
+            )
+            .join("\n")
+        : "None yet — this is the very first batch, so the cast has not been introduced.";
+
+
+    const supportingCastInstruction =
+        supportingCharacters
+        ? `The creator wants these people/groups to exist in the story. Introduce them gradually across batches — do not dump the entire cast into scene 1:\n${supportingCharacters}`
+        : `No specific cast was requested by the creator. Invent 2-4 memorable recurring characters yourself over the course of the story (an ally, a rival, someone the protagonist must protect, a mentor, a stranger who can't be fully trusted). A real survival story is almost never one person narrating alone for the entire runtime — bring other people in and out naturally, the way a produced show would.`;
+
+
     return `
 
 ROLE:
-You are the Story Director of a professional survival
-documentary/web-story production studio.
+You are the Story Director and Head Writer of a professional
+YouTube survival-documentary channel. Your scripts are known for
+hooking viewers in the first ten seconds and making them binge an
+entire multi-part series. You are NOT writing a generic AI
+summary — you are writing a real, produced story with real
+narrative craft: foreshadowing, payoff, character arcs, tension
+and release.
 
 PROJECT:
 ${title}
@@ -3225,66 +3880,124 @@ ${title}
 GENRE:
 ${genre}
 
-MAIN CHARACTER:
+MAIN CHARACTER (PROTAGONIST):
 ${character}
 
-WORLD:
+KNOWN SUPPORTING CHARACTERS SO FAR (keep each one's name,
+personality and appearance identical every time they reappear —
+a character can be absent for a while and return later, exactly
+like a real show does):
+${rosterBlock}
+
+CAST DIRECTION:
+${supportingCastInstruction}
+
+WORLD / ENVIRONMENT:
 ${world}
 
 STORY GOAL:
 ${goal}
 
-PREVIOUS MEMORY:
+STORY MEMORY SO FAR (canon — never contradict this):
 ${memory}
 
-CURRENT BATCH:
-${batch}
+PROGRESS:
+This is batch ${batch} of ${totalBatches}.
+${isFirstBatch ? "This is the OPENING of the entire series." : "This continues directly from the previous batch."}
+${isFinalBatch ? "This is the FINAL batch — steer the story toward a satisfying resolution of the story goal." : "This is NOT the final batch — do not resolve the whole story goal yet, and do not let this batch feel like a dead end."}
 
 SCENES:
-Generate exactly ${scenes} scenes.
+Generate exactly ${scenes} scenes that continue with zero
+narrative gap. A viewer who just finished the previous batch
+should feel this pick up exactly where it left off — never
+restart, never re-explain what already happened, never repeat a
+beat that was already shown.
 
 LANGUAGE:
 Write narration in ${languageInstruction}.
 
-NARRATION RULES:
+${isFirstBatch ? `OPENING HOOK (applies ONLY to scene 1 of this batch):
+Scene 1's narration must work as a real YouTube retention hook —
+open in the middle of a moment (in media res), with a striking
+image, an unanswered question, or foreshadowing of what the
+protagonist is about to lose or discover. Do not open with slow
+throat-clearing like "it was a normal day" — grab attention in
+the very first line.` : `CONTINUITY OPENING:
+Scene 1 of this batch must NOT restart the story, re-introduce
+the world, or re-explain what already happened. Pick up the
+tension exactly where the previous batch's memory left off, mid
+-motion.`}
 
-- Each narration should normally be 14-24 words.
-- It must sound natural when spoken by an AI narrator.
-- No headings.
-- No bullet points.
-- No "Scene one", "Scene two".
-- No camera directions inside narration.
-- No meta commentary.
-- Keep pacing engaging.
-- Focus on survival decisions, environment, tension,
-  discovery, resources, weather, shelter, hunger,
-  uncertainty and consequences.
-- Do not artificially insert action in every scene.
-- Let quiet survival moments exist.
-- Avoid repetitive descriptions.
-- Maintain character personality.
-- Maintain physical continuity.
-- Remember previous events.
+NARRATION — REAL STORYTELLING, NOT AI SLOP:
 
-VISUAL BRIEF RULES:
+- Each narration line is normally 14-24 words, natural to speak
+  aloud in a single narrator's voice.
+- Vary sentence rhythm on purpose: mix short punchy lines with
+  longer flowing ones. Do not make every sentence the same length
+  and shape — that is the biggest tell of generic AI writing.
+- Ground moments in specific sensory detail (a smell, a sound, the
+  weight of something, the exact texture of cold) instead of vague
+  general statements.
+- Let the protagonist and supporting characters make real decisions
+  with real consequences, not passive events that just "happen" to
+  them.
+- Occasionally let a character's actual short spoken line come
+  through inside the narration, reported naturally, so it reads
+  like a real scene and not a report about one.
+- Build in small callbacks to earlier events, objects or people
+  from the STORY MEMORY so the story feels connected and
+  re-watchable, not episodic and disposable.
+- End this batch's final scene on a genuine hook, open question or
+  rising threat that pulls the viewer toward the next part — never
+  end on a flat, closed note unless this is the final batch.
+- AVOID overused AI-generated clichés such as: "little did he/she
+  know", "as fate would have it", "the eerie silence loomed", "in
+  the blink of an eye", "a shiver ran down their spine",
+  "unbeknownst to them", repeated "but then, suddenly...", or any
+  line generic enough to paste into a completely different story
+  unchanged. Every line should feel specific to THIS character, in
+  THIS place, right now.
+- No headings, no bullet points, no "Scene one / Scene two"
+  labels, no camera directions inside the narration text, no meta
+  commentary.
+- Let quiet, human survival moments exist too — rest, doubt, small
+  talk between characters, and quiet decision-making are part of a
+  real story, not just constant action.
 
-Create a concise visual description for each scene.
+CAST RULES:
 
-Do NOT name copyrighted characters.
+- This story must NOT be one character narrating alone for the
+  whole runtime. Bring in the supporting cast above at a natural,
+  gradual pace across batches.
+- When you introduce a brand-new named character in this batch (not
+  already listed in KNOWN SUPPORTING CHARACTERS SO FAR), add them
+  to "new_characters" with a short, concrete physical-appearance
+  description that can be reused for image generation so
+  illustrations of them stay consistent later.
+- For every scene, list in "characters_present" the name of every
+  character who is physically on-screen or actively speaking (use
+  "Protagonist" for the main character, and each supporting
+  character's exact name).
 
-Do NOT request an exact imitation of a named artist
-or copyrighted franchise.
+VISUAL BRIEF RULES (per scene):
 
-Describe original characters using their physical
-appearance and clothing.
-
-Avoid unnecessary graphic gore.
-
-If dangerous events happen, describe them cinematically
-without graphic injury detail.
-
-The visual brief should contain:
-subject + environment + action + emotional state.
+- "visual_brief" must be a rich, concrete visual description
+  containing: subject(s) + specific pose/action + facial
+  expression/emotion + environment detail (foreground, midground,
+  background) + what makes this moment visually distinct from the
+  scene before it.
+- "camera_angle" is a short, concrete shot description (e.g. "low
+  wide shot", "close-up on hands", "over-the-shoulder",
+  "aerial establishing shot", "eye-level medium shot").
+- "lighting_mood" is a short description of the light and
+  emotional atmosphere (e.g. "cold blue dawn light, isolated and
+  small", "warm dying campfire glow, fragile safety").
+- Do NOT name copyrighted characters, franchises, or a named
+  artist's style.
+- Describe original characters using physical appearance and
+  clothing only.
+- Avoid graphic gore; if something dangerous happens, describe it
+  cinematically without graphic injury detail.
 
 IMPORTANT:
 This is an original survival story.
@@ -3302,7 +4015,7 @@ Return ONLY valid JSON matching the schema.
 ========================================================= */
 
 function buildVisualPrompt(
-    sceneBriefs
+    sceneData
 ){
 
     const world =
@@ -3314,14 +4027,41 @@ function buildVisualPrompt(
     const genre =
         $("genre").value;
 
+    const customNotes =
+        $("customStyleNotes").value.trim();
+
+    const styleInfo =
+        IMAGE_STYLES[state.imageStyleKey] ||
+        IMAGE_STYLES.cinematic;
+
+    const rosterBlock =
+        state.characters.length
+        ? state.characters
+            .map(
+                c =>
+                    `- ${c.name} (${c.role}): ${c.appearance}`
+            )
+            .join("\n")
+        : "No supporting characters tracked yet.";
+
+    const sceneBlock =
+        sceneData
+            .map(
+                (s,i)=>
+                    `${i+1}. CHARACTERS ON SCREEN: ${(s.characters && s.characters.length) ? s.characters.join(", ") : "Protagonist"}\n`+
+                    `   SHOT: ${s.camera_angle || "cinematic medium shot"}\n`+
+                    `   LIGHT/MOOD: ${s.lighting_mood || "natural cinematic lighting"}\n`+
+                    `   SCENE: ${s.brief}`
+            )
+            .join("\n\n");
+
 
     return `
 
 ROLE:
-You are the Visual Prompt Architect.
-
-Your ONLY job is to transform scene briefs into
-high-quality Google Flow image prompts.
+You are the Visual Prompt Architect. Your ONLY job is to turn
+structured scene briefs into complete, self-contained, richly
+detailed image-generation prompts for Google Flow.
 
 PROJECT GENRE:
 ${genre}
@@ -3329,90 +4069,66 @@ ${genre}
 WORLD:
 ${world}
 
-CHARACTER BIBLE:
+PROTAGONIST CHARACTER BIBLE:
 ${character}
 
-STYLE DNA:
-Create ONE consistent visual identity and preserve it
-for every prompt.
+KNOWN SUPPORTING CHARACTERS (keep each one's described appearance
+identical every time they appear, so the illustrated cast stays
+recognizable across the whole series):
+${rosterBlock}
 
-VISUAL TARGET:
+CHOSEN VISUAL STYLE — "${styleInfo.name}":
+${styleInfo.keywords}
 
-- beautiful cinematic survival illustration
-- professional concept-art quality
-- highly detailed natural environment
-- believable materials
-- realistic lighting behavior
-- subtle atmospheric depth
-- natural skin texture
-- natural fabric texture
-- detailed foliage
-- realistic rocks, wood, soil and weather
-- cinematic composition
-- controlled color grading
-- pleasant visual harmony
-- no harsh oversaturated neon colors
-- no plastic-looking AI skin
-- no generic fantasy poster appearance
-- no obvious AI artifacts
-- no distorted anatomy
-- no extra fingers
-- no duplicate objects
-- no random text
-- no logos
-- no watermark
-
-STYLE:
-Original cinematic survival illustration with
-a polished webtoon/concept-art influence,
-but NOT an imitation of any named artist,
-studio or copyrighted franchise.
+CREATOR'S CUSTOM STYLE NOTES (always weave these in; they take
+priority over the base style if they conflict):
+${customNotes || "None provided — rely on the chosen visual style above."}
 
 FORMAT:
-16:9 widescreen.
+16:9 widescreen. One final image prompt per scene.
+
+WHAT EVERY FINAL PROMPT MUST CONTAIN, IN THIS ORDER:
+1. Who is on screen, using the exact character description from
+   the character bible / roster above — not just a name.
+2. Their specific pose, action and facial expression/emotion.
+3. The environment in layered detail — foreground, midground,
+   background.
+4. Camera framing/shot type (use the SHOT given for that scene).
+5. Lighting, time of day and emotional atmosphere (use the
+   LIGHT/MOOD given for that scene).
+6. The chosen visual style keywords plus any custom style notes.
+7. Quality/finish keywords: highly detailed, professional
+   illustration quality, coherent anatomy, no text, no watermark,
+   no logo, no extra fingers, no duplicated objects, no AI
+   artifacts.
 
 CHARACTER CONSISTENCY:
-Keep the same:
-- face
-- hair
-- age
-- body proportions
-- clothing
-- backpack
-- important props
+For every character listed in "CHARACTERS ON SCREEN" below, keep
+their face, hair, age, body proportions, clothing and important
+props identical to the character bible / roster above and to
+earlier scenes.
 
 ENVIRONMENT CONSISTENCY:
-Keep believable geography and weather continuity.
+Keep believable geography, season and weather continuity with the
+world description.
 
-PROMPT SAFETY:
-
-Never use:
-- named copyrighted characters
-- named artist imitation
-- franchise style imitation
-- explicit gore
-- graphic dismemberment
+PROMPT SAFETY — never include:
+- named copyrighted characters or franchises
+- direct named-artist style imitation
+- explicit gore, graphic dismemberment or graphic injury detail
 - sexualized descriptions
-- exploitative injury descriptions
 
-If a scene contains dangerous action,
-rewrite it as cinematic non-graphic survival action.
+If a scene involves danger, describe it as cinematic, non-graphic
+survival action.
 
-SCENES:
+SCENES TO CONVERT:
 
-${sceneBriefs
-    .map(
-        (s,i)=>
-            `${i+1}. ${s}`
-    )
-    .join("\n")}
+${sceneBlock}
 
-Return JSON only.
-
-For every scene produce ONE final image prompt.
-
-The prompt should be self-contained enough that
-Google Flow can understand it without the original story.
+Return JSON only. Produce exactly ${sceneData.length} prompts, in
+the same order, each one long and specific enough to be fully
+self-contained — a reader should be able to picture the exact shot
+without having read the original story.
 
 `;
 
@@ -3463,10 +4179,12 @@ PRESERVE:
 - character appearance
 - emotion
 - composition
+- camera framing and shot type
 - lighting
 - weather
 - important objects
 - visual continuity
+- chosen art style keywords
 
 If something is risky,
 convert it into a non-graphic cinematic description.
@@ -3852,6 +4570,23 @@ async function runCurrentBatch(){
     }
 
 
+    if(
+        story.new_characters &&
+        story.new_characters.length
+    ){
+
+        mergeCharacters(
+            story.new_characters
+        );
+
+        log(
+            `Cast expanded: ${story.new_characters.map(c=>c.name).join(", ")}`,
+            "ok"
+        );
+
+    }
+
+
     /* =====================
        WRITER
     ===================== */
@@ -3940,10 +4675,18 @@ async function runCurrentBatch(){
         "gemini-3.5-flash-lite";
 
 
-    const briefs =
+    const sceneData =
         story.scenes.map(
-            s =>
-                s.visual_brief
+            s => ({
+                brief:
+                    s.visual_brief,
+                camera_angle:
+                    s.camera_angle,
+                lighting_mood:
+                    s.lighting_mood,
+                characters:
+                    s.characters_present
+            })
         );
 
 
@@ -3951,7 +4694,7 @@ async function runCurrentBatch(){
         await callGemini(
             visualModel,
             buildVisualPrompt(
-                briefs
+                sceneData
             ),
             visualSchema
         );
@@ -4441,7 +5184,9 @@ function saveMemory(){
     "storyTitle",
     "genre",
     "character",
+    "supportingCharacters",
     "world",
+    "customStyleNotes",
     "storyGoal",
     "memory",
     "batchNo",
